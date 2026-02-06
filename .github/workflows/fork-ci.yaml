@@ -69,18 +69,34 @@ jobs:
 
       - uses: actions/checkout@v6
 
+      - name: Check lantern cache
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: src/lantern/build/lantern-*.zip
+          key: lantern-${{ matrix.config.os }}-${{ matrix.config.version }}-${{ hashFiles('src/lantern/**') }}
+
+      - name: Get cached artifact name
+        if: steps.cache.outputs.cache-hit == 'true'
+        id: cached
+        run: |
+          fname=$(ls src/lantern/build/ | grep "lantern.*\.zip")
+          echo "fname=$fname" >> $GITHUB_OUTPUT
+        shell: bash
+
       - name: Setup cmake
+        if: steps.cache.outputs.cache-hit != 'true'
         uses: jwlawson/actions-setup-cmake@v2
         with:
           cmake-version: "3.25.1"
 
       - name: Set system CUDA path (self-hosted)
-        if: ${{ matrix.self_hosted && matrix.cuda != '' }}
+        if: ${{ steps.cache.outputs.cache-hit != 'true' && matrix.self_hosted && matrix.cuda != '' }}
         run: echo "CUDA_PATH=/usr/local/cuda" >> $GITHUB_ENV
         shell: bash
 
       - name: Install CUDA
-        if: ${{ matrix.cuda != '' && !matrix.self_hosted }}
+        if: ${{ steps.cache.outputs.cache-hit != 'true' && matrix.cuda != '' && !matrix.self_hosted }}
         uses: Jimver/cuda-toolkit@v0.2.24
         id: cuda-toolkit
         with:
@@ -88,12 +104,13 @@ jobs:
           log-file-suffix: '${{matrix.cuda}}.${{matrix.cuda_patch}}.txt'
 
       - name: Install CuDNN
-        if: ${{ matrix.cuda != '' && !matrix.self_hosted }}
+        if: ${{ steps.cache.outputs.cache-hit != 'true' && matrix.cuda != '' && !matrix.self_hosted }}
         uses: ./.github/actions/install-cudnn
         with:
           cuda_version: ${{ matrix.cuda }}
 
       - name: Run cmake
+        if: steps.cache.outputs.cache-hit != 'true'
         run: |
           cd src/lantern/
           mkdir build
@@ -101,6 +118,7 @@ jobs:
           cmake .. ${{ matrix.config.cmake }}
 
       - name: Build libs
+        if: steps.cache.outputs.cache-hit != 'true'
         id: build
         run: |
           cd src/lantern/build
@@ -112,8 +130,8 @@ jobs:
       - name: Upload lantern artifact
         uses: actions/upload-artifact@v6
         with:
-          name: ${{ steps.build.outputs.fname }}
-          path: 'src/lantern/build/${{ steps.build.outputs.fname }}'
+          name: ${{ steps.cached.outputs.fname || steps.build.outputs.fname }}
+          path: 'src/lantern/build/${{ steps.cached.outputs.fname || steps.build.outputs.fname }}'
 
   # ---------------------------------------------------------------------------
   # R CMD check
