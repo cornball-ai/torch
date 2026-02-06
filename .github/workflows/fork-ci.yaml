@@ -1,0 +1,214 @@
+name: Fork CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+
+  # ---------------------------------------------------------------------------
+  # Lantern build
+  # ---------------------------------------------------------------------------
+  lantern:
+    runs-on: ${{ matrix.config.runner }}
+    container: ${{ matrix.container }}
+    name: "lantern | ${{matrix.config.os}} ${{matrix.config.version}}"
+    timeout-minutes: ${{ matrix.timeout }}
+    continue-on-error: ${{ matrix.allow_failure || false }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: macOS, version: cpu-intel, runner: macos-15-intel}
+          - {os: macOS, version: cpu-m1, runner: [self-hosted, m1]}
+          - {os: ubuntu, version: cpu, runner: ubuntu-latest}
+          - {os: ubuntu, version: cu12.6, runner: [self-hosted, linux]}
+          - {os: ubuntu, version: cu12.8, runner: [self-hosted, linux]}
+          - {os: windows, version: cpu, runner: windows-2022}
+          - {os: windows, version: cu12.6, runner: windows-2022}
+          - {os: windows, version: cu12.8, runner: windows-2022}
+
+        include:
+          # Self-hosted runners: short timeout + allow failure (no runner = graceful skip)
+          - config: {version: cpu-m1}
+            timeout: 10
+            allow_failure: true
+          - config: {os: ubuntu, version: cu12.6}
+            timeout: 10
+            allow_failure: true
+          - config: {os: ubuntu, version: cu12.8}
+            timeout: 10
+            allow_failure: true
+
+          # GH-hosted runners: normal timeout
+          - config: {version: cpu-intel}
+            timeout: 120
+          - config: {os: ubuntu, version: cpu}
+            timeout: 120
+          - config: {os: windows, version: cpu}
+            timeout: 120
+          - config: {os: windows, version: cu12.6}
+            timeout: 120
+          - config: {os: windows, version: cu12.8}
+            timeout: 120
+
+          # Ubuntu jobs run in container
+          - config: {os: ubuntu}
+            container: ubuntu:20.04
+
+          # CUDA versions
+          - config: {version: cu12.6}
+            cuda: "12.6"
+            cuda_patch: "3"
+          - config: {version: cu12.8}
+            cuda: "12.8"
+            cuda_patch: "1"
+
+    env:
+      CUDA: ${{ matrix.cuda }}
+
+    steps:
+
+      - name: Install system dependencies
+        if: matrix.container != ''
+        run: |
+          DEBIAN_FRONTEND="noninteractive" apt-get update
+          DEBIAN_FRONTEND="noninteractive" apt-get install -y curl sudo libxml2-dev wget chrpath rsync git build-essential
+          curl -fsSL https://get.docker.com -o get-docker.sh
+          DRY_RUN=1 sh ./get-docker.sh
+
+      - uses: actions/checkout@v6
+
+      - name: Setup cmake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: "3.25.1"
+
+      - name: Install CUDA
+        if: ${{ matrix.cuda != '' }}
+        uses: Jimver/cuda-toolkit@v0.2.24
+        id: cuda-toolkit
+        with:
+          cuda: "${{matrix.cuda}}.${{matrix.cuda_patch}}"
+          log-file-suffix: '${{matrix.cuda}}.${{matrix.cuda_patch}}.txt'
+
+      - name: Install CuDNN
+        if: ${{ matrix.cuda != '' }}
+        uses: ./.github/actions/install-cudnn
+        with:
+          cuda_version: ${{ matrix.cuda }}
+
+      - name: Run cmake
+        run: |
+          cd src/lantern/
+          mkdir build
+          cd build
+          cmake .. ${{ matrix.config.cmake }}
+
+      - name: Build libs
+        id: build
+        run: |
+          cd src/lantern/build
+          cmake --build . --config Release --parallel 4 --target package
+          fname=$(ls . | grep "lantern.*\.zip")
+          echo "fname=$fname" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Upload lantern artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: ${{ steps.build.outputs.fname }}
+          path: 'src/lantern/build/${{ steps.build.outputs.fname }}'
+
+  # ---------------------------------------------------------------------------
+  # R CMD check
+  # ---------------------------------------------------------------------------
+  check:
+    needs: lantern
+    if: ${{ always() && needs.lantern.result != 'failed' }}
+    runs-on: ${{ matrix.config.runner }}
+    container: ${{ matrix.container }}
+    name: "check | ${{ matrix.config.os }} R:${{ matrix.config.r_version }} ${{matrix.config.version}}"
+    timeout-minutes: ${{ matrix.timeout }}
+    continue-on-error: ${{ matrix.allow_failure || false }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: macOS, r_version: release, version: cpu-intel, runner: macos-15-intel}
+          - {os: macOS, r_version: '', version: cpu-m1, runner: [self-hosted, macOS, ARM64]}
+          - {os: ubuntu, r_version: release, version: cpu, runner: ubuntu-22.04}
+          - {os: ubuntu, r_version: release, version: cu12.6, runner: [self-hosted, gpu-local]}
+          - {os: windows, r_version: release, version: cpu, runner: windows-latest}
+
+        include:
+          # Self-hosted runners: short timeout + allow failure
+          - config: {version: cpu-m1}
+            timeout: 10
+            allow_failure: true
+          - config: {version: cu12.6}
+            timeout: 10
+            allow_failure: true
+
+          # GH-hosted runners: normal timeout
+          - config: {version: cpu-intel}
+            timeout: 120
+          - config: {os: ubuntu, version: cpu}
+            timeout: 120
+          - config: {os: windows, version: cpu}
+            timeout: 120
+
+          # GPU container
+          - config: {os: ubuntu, version: cu12.6}
+            container: {image: 'nvidia/cuda:12.6.3-cudnn-devel-ubuntu20.04', options: '--gpus all --runtime=nvidia'}
+            cuda_enabled: 1
+
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      TORCH_TEST: 1
+      TORCH_INSTALL: 1
+      TORCH_TEST_CUDA: ${{ matrix.cuda_enabled }}
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+
+      - name: Download lantern artifacts
+        if: ${{ needs.lantern.result != 'skipped' }}
+        uses: actions/download-artifact@v7
+        with:
+          pattern: lantern-*
+          path: '${{ runner.temp }}/'
+          merge-multiple: true
+
+      - name: Set base URL for downloading
+        if: ${{ needs.lantern.result != 'skipped' }}
+        run: |
+          echo "LANTERN_BASE_URL=${{ runner.temp }}/" >> $GITHUB_ENV
+        shell: bash
+
+      - uses: actions/checkout@v6
+
+      - if: ${{ env.TORCH_TEST_CUDA == 1 }}
+        shell: bash
+        run: |
+          nvidia-smi
+
+      - uses: ./.github/actions/setup-r
+        with:
+          r_version: ${{ matrix.config.r_version }}
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          cache: false
+          extra-packages: any::rcmdcheck
+          needs: check
+
+      - name: Session info
+        run: |
+          Rscript -e "sessionInfo()"
+
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          error-on: '"error"'
+          args: 'c("--no-multiarch", "--no-manual", "--as-cran")'
