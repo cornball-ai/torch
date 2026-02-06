@@ -181,14 +181,21 @@ jobs:
           nvidia-smi
 
       - uses: ./.github/actions/setup-r
+        if: ${{ !matrix.self_hosted }}
         with:
           r_version: ${{ matrix.config.r_version }}
 
       - uses: r-lib/actions/setup-r-dependencies@v2
+        if: ${{ !matrix.self_hosted }}
         with:
           cache: false
           extra-packages: any::rcmdcheck
           needs: check
+
+      - name: Install R dependencies (self-hosted)
+        if: ${{ matrix.self_hosted }}
+        run: Rscript -e 'if (!requireNamespace("rcmdcheck", quietly=TRUE)) install.packages("rcmdcheck")'
+        shell: bash
 
       - name: Session info
         run: |
