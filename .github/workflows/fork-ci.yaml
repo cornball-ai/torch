@@ -19,8 +19,9 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: macOS, version: cpu-intel, runner: macos-15-intel}
-          - {os: macOS, version: cpu-m1, runner: [self-hosted, m1]}
+          # macOS disabled until mlverse/libtorch-mac-m1 has 2.8.0 builds
+          # - {os: macOS, version: cpu-intel, runner: macos-15-intel}
+          # - {os: macOS, version: cpu-m1, runner: [self-hosted, m1]}
           - {os: ubuntu, version: cpu, runner: ubuntu-latest}
           - {os: ubuntu, version: cu12.8, runner: [self-hosted, linux]}
           - {os: windows, version: cpu, runner: windows-2022}
@@ -28,19 +29,12 @@ jobs:
           - {os: windows, version: cu12.8, runner: windows-2022}
 
         include:
-          # Self-hosted Mac: no runner registered, short timeout + allow failure
-          - config: {version: cpu-m1}
-            timeout: 10
-            allow_failure: true
-
           # Self-hosted Linux CUDA: real runner, use system CUDA 12.8/cuDNN
           - config: {os: ubuntu, version: cu12.8}
             timeout: 120
             self_hosted: true
 
-          # GH-hosted runners: normal timeout
-          - config: {version: cpu-intel}
-            timeout: 120
+          # GH-hosted runners
           - config: {os: ubuntu, version: cpu}
             timeout: 120
           - config: {os: windows, version: cpu}
@@ -138,27 +132,21 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: macOS, r_version: release, version: cpu-intel, runner: macos-15-intel}
-          - {os: macOS, r_version: '', version: cpu-m1, runner: [self-hosted, macOS, ARM64]}
+          # macOS disabled until mlverse/libtorch-mac-m1 has 2.8.0 builds
+          # - {os: macOS, r_version: release, version: cpu-intel, runner: macos-15-intel}
+          # - {os: macOS, r_version: '', version: cpu-m1, runner: [self-hosted, macOS, ARM64]}
           - {os: ubuntu, r_version: release, version: cpu, runner: ubuntu-22.04}
           - {os: ubuntu, r_version: release, version: cu12.8, runner: [self-hosted, linux]}
           - {os: windows, r_version: release, version: cpu, runner: windows-latest}
 
         include:
-          # Self-hosted Mac: no runner, short timeout + allow failure
-          - config: {version: cpu-m1}
-            timeout: 10
-            allow_failure: true
-
           # Self-hosted Linux CUDA: real runner, full timeout
           - config: {version: cu12.8}
             timeout: 120
             cuda_enabled: 1
             self_hosted: true
 
-          # GH-hosted runners: normal timeout
-          - config: {version: cpu-intel}
-            timeout: 120
+          # GH-hosted runners
           - config: {os: ubuntu, version: cpu}
             timeout: 120
           - config: {os: windows, version: cpu}
