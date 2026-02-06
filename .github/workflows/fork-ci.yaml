@@ -34,11 +34,13 @@ jobs:
             timeout: 10
             allow_failure: true
 
-          # Self-hosted Linux CUDA: real runner, full timeout
+          # Self-hosted Linux CUDA: real runner, use system CUDA/cuDNN
           - config: {os: ubuntu, version: cu12.6}
             timeout: 120
+            self_hosted: true
           - config: {os: ubuntu, version: cu12.8}
             timeout: 120
+            self_hosted: true
 
           # GH-hosted runners: normal timeout
           - config: {version: cpu-intel}
@@ -84,8 +86,13 @@ jobs:
         with:
           cmake-version: "3.25.1"
 
+      - name: Set system CUDA path (self-hosted)
+        if: ${{ matrix.self_hosted && matrix.cuda != '' }}
+        run: echo "CUDA_PATH=/usr/local/cuda" >> $GITHUB_ENV
+        shell: bash
+
       - name: Install CUDA
-        if: ${{ matrix.cuda != '' }}
+        if: ${{ matrix.cuda != '' && !matrix.self_hosted }}
         uses: Jimver/cuda-toolkit@v0.2.24
         id: cuda-toolkit
         with:
@@ -93,7 +100,7 @@ jobs:
           log-file-suffix: '${{matrix.cuda}}.${{matrix.cuda_patch}}.txt'
 
       - name: Install CuDNN
-        if: ${{ matrix.cuda != '' }}
+        if: ${{ matrix.cuda != '' && !matrix.self_hosted }}
         uses: ./.github/actions/install-cudnn
         with:
           cuda_version: ${{ matrix.cuda }}
@@ -151,6 +158,7 @@ jobs:
           - config: {version: cu12.6}
             timeout: 120
             cuda_enabled: 1
+            self_hosted: true
 
           # GH-hosted runners: normal timeout
           - config: {version: cpu-intel}
