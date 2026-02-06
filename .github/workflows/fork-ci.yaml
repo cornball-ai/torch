@@ -29,16 +29,16 @@ jobs:
           - {os: windows, version: cu12.8, runner: windows-2022}
 
         include:
-          # Self-hosted runners: short timeout + allow failure (no runner = graceful skip)
+          # Self-hosted Mac: no runner registered, short timeout + allow failure
           - config: {version: cpu-m1}
             timeout: 10
             allow_failure: true
+
+          # Self-hosted Linux CUDA: real runner, full timeout
           - config: {os: ubuntu, version: cu12.6}
-            timeout: 10
-            allow_failure: true
+            timeout: 120
           - config: {os: ubuntu, version: cu12.8}
-            timeout: 10
-            allow_failure: true
+            timeout: 120
 
           # GH-hosted runners: normal timeout
           - config: {version: cpu-intel}
@@ -52,8 +52,8 @@ jobs:
           - config: {os: windows, version: cu12.8}
             timeout: 120
 
-          # Ubuntu jobs run in container
-          - config: {os: ubuntu}
+          # Only GH-hosted Ubuntu CPU runs in container (self-hosted has native OS)
+          - config: {os: ubuntu, version: cpu}
             container: ubuntu:20.04
 
           # CUDA versions
@@ -138,17 +138,19 @@ jobs:
           - {os: macOS, r_version: release, version: cpu-intel, runner: macos-15-intel}
           - {os: macOS, r_version: '', version: cpu-m1, runner: [self-hosted, macOS, ARM64]}
           - {os: ubuntu, r_version: release, version: cpu, runner: ubuntu-22.04}
-          - {os: ubuntu, r_version: release, version: cu12.6, runner: [self-hosted, gpu-local]}
+          - {os: ubuntu, r_version: release, version: cu12.6, runner: [self-hosted, linux]}
           - {os: windows, r_version: release, version: cpu, runner: windows-latest}
 
         include:
-          # Self-hosted runners: short timeout + allow failure
+          # Self-hosted Mac: no runner, short timeout + allow failure
           - config: {version: cpu-m1}
             timeout: 10
             allow_failure: true
+
+          # Self-hosted Linux CUDA: real runner, full timeout
           - config: {version: cu12.6}
-            timeout: 10
-            allow_failure: true
+            timeout: 120
+            cuda_enabled: 1
 
           # GH-hosted runners: normal timeout
           - config: {version: cpu-intel}
@@ -157,11 +159,6 @@ jobs:
             timeout: 120
           - config: {os: windows, version: cpu}
             timeout: 120
-
-          # GPU container
-          - config: {os: ubuntu, version: cu12.6}
-            container: {image: 'nvidia/cuda:12.6.3-cudnn-devel-ubuntu20.04', options: '--gpus all --runtime=nvidia'}
-            cuda_enabled: 1
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
