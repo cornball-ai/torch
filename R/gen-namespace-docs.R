@@ -7561,7 +7561,7 @@ NULL
 #'   should take part in attention (and `FALSE` masks out the position). A float mask
 #'   of the same type as query, key, value that is added to the attention score (use
 #'   `-Inf` to mask out positions). Default: `list()`.
-#' @param dropout_p (float) Dropout probability in the range [0.0, 1.0]; if greater
+#' @param dropout_p (float) Dropout probability in the range \[0.0, 1.0\]; if greater
 #'   than 0.0, dropout is applied during training. Default: 0.0.
 #' @param is_causal (bool) If `TRUE`, assumes causal attention masking. `attn_mask` is
 #'   ignored when `is_causal=TRUE`. Default: `FALSE`.
