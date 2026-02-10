@@ -88,11 +88,30 @@ set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "${TORCH_PATH}")
 find_package(Torch REQUIRED)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
 
+# Auto-detect CUDA from installed libtorch when CUDA env var is not set.
+# This enables cuda_empty_cache(), cuda_memory_stats(), etc. for users who
+# install the CUDA-enabled torch R package without setting CUDA= at build time.
+if (NOT DEFINED CUDA_VERSION_NUMBER)
+    find_library(LIBTORCH_CUDA c10_cuda PATHS "${TORCH_PATH}/lib" NO_DEFAULT_PATH)
+    if (LIBTORCH_CUDA)
+        message(STATUS "Auto-detected CUDA support in libtorch (found libc10_cuda)")
+        set(TORCH_HAS_CUDA TRUE)
+        find_package(CUDAToolkit QUIET)
+        if (CUDAToolkit_FOUND)
+            message(STATUS "CUDA toolkit found: ${CUDAToolkit_VERSION}")
+            set(TORCH_HAS_CUDA_TOOLKIT TRUE)
+            enable_language(CUDA)
+        else()
+            message(STATUS "CUDA toolkit not found; CUDA memory management will be enabled but .cu files will be skipped")
+        endif()
+    endif()
+endif()
+
 ############################################################
 # Library
 ############################################################
 
-set(LANTERN_SRC 
+set(LANTERN_SRC
     src/lantern.cpp
     src/TensorOptions.cpp
     src/Dtype.cpp
@@ -139,29 +158,44 @@ if(APPLE)
 endif()
 
 if(DEFINED ENV{CUDA} AND NOT '$ENV{CUDA}' STREQUAL '')
- 
-  set(LANTERN_SRC 
-      ${LANTERN_SRC} 
+  # Full CUDA build: env var explicitly set
+  set(LANTERN_SRC
+      ${LANTERN_SRC}
       src/AllocatorCuda.cpp
       src/Contrib/SortVertices/sort_vert_kernel.cu
       src/Contrib/SortVertices/sort_vert.cpp
   )
-  
+
   set_source_files_properties(src/Cuda.cpp PROPERTIES COMPILE_DEFINITIONS __NVCC__)
   set_source_files_properties(src/Amp.cpp  PROPERTIES COMPILE_DEFINITIONS __NVCC__)
-  
+
   add_library(lantern SHARED ${LANTERN_SRC})
 
-  if (WIN32)  
+  if (WIN32)
     set_property(TARGET lantern PROPERTY CUDA_SEPARABLE_COMPILATION ON)
     set_property(TARGET lantern PROPERTY CUDA_STANDARD 17)
   else()
     set_property(TARGET lantern PROPERTY CUDA_STANDARD 17)
   endif()
-  
+
+elseif(TORCH_HAS_CUDA AND TORCH_HAS_CUDA_TOOLKIT)
+  # Auto-detected CUDA from libtorch + CUDA toolkit available
+  set(LANTERN_SRC
+      ${LANTERN_SRC}
+      src/AllocatorCuda.cpp
+      src/Contrib/SortVertices/sort_vert_kernel.cu
+      src/Contrib/SortVertices/sort_vert.cpp
+  )
+
+  set_source_files_properties(src/Cuda.cpp PROPERTIES COMPILE_DEFINITIONS __NVCC__)
+  set_source_files_properties(src/Amp.cpp  PROPERTIES COMPILE_DEFINITIONS __NVCC__)
+
+  add_library(lantern SHARED ${LANTERN_SRC})
+  set_property(TARGET lantern PROPERTY CUDA_STANDARD 17)
+
 else()
-  set(LANTERN_SRC 
-      ${LANTERN_SRC} 
+  set(LANTERN_SRC
+      ${LANTERN_SRC}
       src/Contrib/SortVertices/sort_vert_cpu.cpp
   )
   add_library(lantern SHARED ${LANTERN_SRC})
