@@ -14,3 +14,16 @@ and R CMD check on Ubuntu, Windows, and (when available) macOS.
    mlverse/torch via PR
 
 Never push untested work directly to a PR branch.
+
+When cherry-picking to the PR branch, comment on the upstream PR with a
+link to the passing fork CI run.
+
+## Remotes
+
+- `origin` → `cornball-ai/torch` (our fork)
+- `upstream` → `mlverse/torch`
+
+## Files that live only on fork-ci
+
+- `CLAUDE.md` — don't put on PR branches to avoid cluttering upstream
+- `.github/workflows/fork-ci.yaml` — CI only triggers for branches that contain it
