@@ -48405,6 +48405,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_method_Tensor_is_sparse_csr
+bool cpp_method_Tensor_is_sparse_csr(torch::Tensor x);
+RcppExport SEXP _torch_cpp_method_Tensor_is_sparse_csr(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< torch::Tensor >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_method_Tensor_is_sparse_csr(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 // torch_tensor_free
 void torch_tensor_free(Rcpp::XPtr<torch::Tensor> x);
 RcppExport SEXP _torch_torch_tensor_free(SEXP xSEXP) {
@@ -52581,6 +52592,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_torch_cpp_namespace_normal_tensor_tensor", (DL_FUNC) &_torch_cpp_namespace_normal_tensor_tensor, 3},
     {"_torch_nnf_pad_circular", (DL_FUNC) &_torch_nnf_pad_circular, 2},
     {"_torch_cpp_method_Tensor_is_sparse", (DL_FUNC) &_torch_cpp_method_Tensor_is_sparse, 1},
+    {"_torch_cpp_method_Tensor_is_sparse_csr", (DL_FUNC) &_torch_cpp_method_Tensor_is_sparse_csr, 1},
     {"_torch_torch_tensor_free", (DL_FUNC) &_torch_torch_tensor_free, 1},
     {"_torch_cpp_torch_tensor_list", (DL_FUNC) &_torch_cpp_torch_tensor_list, 1},
     {"_torch_cpp_trace_function", (DL_FUNC) &_torch_cpp_trace_function, 8},
