@@ -81,7 +81,18 @@ void schedule_backward_task(std::packaged_task<void()>&& task) {
   );
   
   if (std::this_thread::get_id() == main_thread_id()) {
-    pool->push(std::move(task));
+    // The number of intra-op threads (torch_set_num_threads()) is thread-local
+    // in OpenMP, so the worker threads would otherwise use all available cores.
+    // We only set it when it differs, as at::set_num_threads() also clears the
+    // oneDNN cache.
+    int num_threads = lantern_get_num_threads();
+    pool->push(std::packaged_task<void()>(
+        [num_threads, task = std::move(task)]() mutable {
+          if (lantern_get_num_threads() != num_threads) {
+            lantern_set_num_threads(num_threads);
+          }
+          task();
+        }));
   } else {
     gBackwardTasks.schedule(std::move(task));
   }
@@ -419,8 +430,19 @@ void call_r_gc(bool full) {
 }
 
 // [[Rcpp::export]]
-void cpp_set_lantern_allocator(uint64_t threshold_call_gc = 4000) {
+void cpp_set_lantern_allocator(uint64_t threshold_call_gc = 4000,
+                               bool cache_enabled = true,
+                               uint64_t cache_max_size_mb = 4000,
+                               uint64_t cache_min_block_size = 1024) {
   set_lantern_allocator(&call_r_gc, threshold_call_gc);
+  lantern_set_allocator_bypass(!cache_enabled);
+  lantern_set_cache_max_size(cache_max_size_mb);
+  lantern_set_cache_min_block_size(cache_min_block_size);
+}
+
+// [[Rcpp::export]]
+void cpp_cpu_cache_flush() {
+  lantern_flush_cache();
 }
 
 // [[Rcpp::export]]

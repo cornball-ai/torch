@@ -496,12 +496,24 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_set_lantern_allocator
-void cpp_set_lantern_allocator(uint64_t threshold_call_gc);
-RcppExport SEXP _torch_cpp_set_lantern_allocator(SEXP threshold_call_gcSEXP) {
+void cpp_set_lantern_allocator(uint64_t threshold_call_gc, bool cache_enabled, uint64_t cache_max_size_mb, uint64_t cache_min_block_size);
+RcppExport SEXP _torch_cpp_set_lantern_allocator(SEXP threshold_call_gcSEXP, SEXP cache_enabledSEXP, SEXP cache_max_size_mbSEXP, SEXP cache_min_block_sizeSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< uint64_t >::type threshold_call_gc(threshold_call_gcSEXP);
-    cpp_set_lantern_allocator(threshold_call_gc);
+    Rcpp::traits::input_parameter< bool >::type cache_enabled(cache_enabledSEXP);
+    Rcpp::traits::input_parameter< uint64_t >::type cache_max_size_mb(cache_max_size_mbSEXP);
+    Rcpp::traits::input_parameter< uint64_t >::type cache_min_block_size(cache_min_block_sizeSEXP);
+    cpp_set_lantern_allocator(threshold_call_gc, cache_enabled, cache_max_size_mb, cache_min_block_size);
+    return R_NilValue;
+END_RCPP
+}
+// cpp_cpu_cache_flush
+void cpp_cpu_cache_flush();
+RcppExport SEXP _torch_cpp_cpu_cache_flush() {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    cpp_cpu_cache_flush();
     return R_NilValue;
 END_RCPP
 }
@@ -568,6 +580,15 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_mps_synchronize
+void cpp_mps_synchronize();
+RcppExport SEXP _torch_cpp_mps_synchronize() {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    cpp_mps_synchronize();
+    return R_NilValue;
+END_RCPP
+}
 // cpp_arg_to_torch_type
 std::string cpp_arg_to_torch_type(SEXP obj, const std::vector<std::string>& expected_types, const std::string& arg_name);
 RcppExport SEXP _torch_cpp_arg_to_torch_type(SEXP objSEXP, SEXP expected_typesSEXP, SEXP arg_nameSEXP) {
@@ -578,47 +599,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const std::vector<std::string>& >::type expected_types(expected_typesSEXP);
     Rcpp::traits::input_parameter< const std::string& >::type arg_name(arg_nameSEXP);
     rcpp_result_gen = Rcpp::wrap(cpp_arg_to_torch_type(obj, expected_types, arg_name));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cpp_clean_names
-std::string cpp_clean_names(const std::string& x, const std::vector<std::string>& r);
-RcppExport SEXP _torch_cpp_clean_names(SEXP xSEXP, SEXP rSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const std::string& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< const std::vector<std::string>& >::type r(rSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_clean_names(x, r));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cpp_make_function_name
-std::string cpp_make_function_name(const std::string& method_name, const std::vector<std::string>& arg_names, const std::vector<std::string>& arg_types, const std::string& type);
-RcppExport SEXP _torch_cpp_make_function_name(SEXP method_nameSEXP, SEXP arg_namesSEXP, SEXP arg_typesSEXP, SEXP typeSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const std::string& >::type method_name(method_nameSEXP);
-    Rcpp::traits::input_parameter< const std::vector<std::string>& >::type arg_names(arg_namesSEXP);
-    Rcpp::traits::input_parameter< const std::vector<std::string>& >::type arg_types(arg_typesSEXP);
-    Rcpp::traits::input_parameter< const std::string& >::type type(typeSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_make_function_name(method_name, arg_names, arg_types, type));
-    return rcpp_result_gen;
-END_RCPP
-}
-// create_fn_name
-std::string create_fn_name(const std::string& fun_name, const std::string& fun_type, const std::vector<std::string>& nd_args, const Rcpp::List& args, const Rcpp::List& expected_types);
-RcppExport SEXP _torch_create_fn_name(SEXP fun_nameSEXP, SEXP fun_typeSEXP, SEXP nd_argsSEXP, SEXP argsSEXP, SEXP expected_typesSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const std::string& >::type fun_name(fun_nameSEXP);
-    Rcpp::traits::input_parameter< const std::string& >::type fun_type(fun_typeSEXP);
-    Rcpp::traits::input_parameter< const std::vector<std::string>& >::type nd_args(nd_argsSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::List& >::type args(argsSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::List& >::type expected_types(expected_typesSEXP);
-    rcpp_result_gen = Rcpp::wrap(create_fn_name(fun_name, fun_type, nd_args, args, expected_types));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -46611,6 +46591,3496 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_torch_dispatch_namespace__aminmax
+SEXP cpp_torch_dispatch_namespace__aminmax(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__aminmax(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__aminmax(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__aminmax_out
+SEXP cpp_torch_dispatch_namespace__aminmax_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__aminmax_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__aminmax_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__assert_async
+SEXP cpp_torch_dispatch_namespace__assert_async(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__assert_async(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__assert_async(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__convolution
+SEXP cpp_torch_dispatch_namespace__convolution(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__convolution(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__convolution(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__ctc_loss
+SEXP cpp_torch_dispatch_namespace__ctc_loss(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__ctc_loss(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__ctc_loss(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__ctc_loss_backward
+SEXP cpp_torch_dispatch_namespace__ctc_loss_backward(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__ctc_loss_backward(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__ctc_loss_backward(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__ctc_loss_out
+SEXP cpp_torch_dispatch_namespace__ctc_loss_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__ctc_loss_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__ctc_loss_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__cudnn_ctc_loss
+SEXP cpp_torch_dispatch_namespace__cudnn_ctc_loss(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__cudnn_ctc_loss(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__cudnn_ctc_loss(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_add
+SEXP cpp_torch_dispatch_namespace__foreach_add(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_add(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_add(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_add_
+SEXP cpp_torch_dispatch_namespace__foreach_add_(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_add_(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_add_(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_add_out
+SEXP cpp_torch_dispatch_namespace__foreach_add_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_add_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_add_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_addcdiv
+SEXP cpp_torch_dispatch_namespace__foreach_addcdiv(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_addcdiv(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_addcdiv(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_addcdiv_
+SEXP cpp_torch_dispatch_namespace__foreach_addcdiv_(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_addcdiv_(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_addcdiv_(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_addcdiv_out
+SEXP cpp_torch_dispatch_namespace__foreach_addcdiv_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_addcdiv_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_addcdiv_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_addcmul
+SEXP cpp_torch_dispatch_namespace__foreach_addcmul(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_addcmul(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_addcmul(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_addcmul_
+SEXP cpp_torch_dispatch_namespace__foreach_addcmul_(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_addcmul_(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_addcmul_(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_addcmul_out
+SEXP cpp_torch_dispatch_namespace__foreach_addcmul_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_addcmul_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_addcmul_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_clamp_max
+SEXP cpp_torch_dispatch_namespace__foreach_clamp_max(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_clamp_max(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_clamp_max(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_clamp_max_
+SEXP cpp_torch_dispatch_namespace__foreach_clamp_max_(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_clamp_max_(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_clamp_max_(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_clamp_max_out
+SEXP cpp_torch_dispatch_namespace__foreach_clamp_max_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_clamp_max_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_clamp_max_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_clamp_min
+SEXP cpp_torch_dispatch_namespace__foreach_clamp_min(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_clamp_min(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_clamp_min(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_clamp_min_
+SEXP cpp_torch_dispatch_namespace__foreach_clamp_min_(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_clamp_min_(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_clamp_min_(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_clamp_min_out
+SEXP cpp_torch_dispatch_namespace__foreach_clamp_min_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_clamp_min_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_clamp_min_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_div
+SEXP cpp_torch_dispatch_namespace__foreach_div(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_div(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_div(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_div_
+SEXP cpp_torch_dispatch_namespace__foreach_div_(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_div_(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_div_(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_div_out
+SEXP cpp_torch_dispatch_namespace__foreach_div_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_div_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_div_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_lerp
+SEXP cpp_torch_dispatch_namespace__foreach_lerp(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_lerp(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_lerp(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_lerp_
+SEXP cpp_torch_dispatch_namespace__foreach_lerp_(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_lerp_(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_lerp_(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_lerp_out
+SEXP cpp_torch_dispatch_namespace__foreach_lerp_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_lerp_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_lerp_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_maximum
+SEXP cpp_torch_dispatch_namespace__foreach_maximum(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_maximum(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_maximum(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_maximum_
+SEXP cpp_torch_dispatch_namespace__foreach_maximum_(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_maximum_(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_maximum_(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_maximum_out
+SEXP cpp_torch_dispatch_namespace__foreach_maximum_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_maximum_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_maximum_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_minimum
+SEXP cpp_torch_dispatch_namespace__foreach_minimum(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_minimum(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_minimum(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_minimum_
+SEXP cpp_torch_dispatch_namespace__foreach_minimum_(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_minimum_(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_minimum_(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_minimum_out
+SEXP cpp_torch_dispatch_namespace__foreach_minimum_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_minimum_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_minimum_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_mul
+SEXP cpp_torch_dispatch_namespace__foreach_mul(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_mul(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_mul(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_mul_
+SEXP cpp_torch_dispatch_namespace__foreach_mul_(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_mul_(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_mul_(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_mul_out
+SEXP cpp_torch_dispatch_namespace__foreach_mul_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_mul_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_mul_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_pow
+SEXP cpp_torch_dispatch_namespace__foreach_pow(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_pow(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_pow(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_pow_
+SEXP cpp_torch_dispatch_namespace__foreach_pow_(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_pow_(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_pow_(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_pow_out
+SEXP cpp_torch_dispatch_namespace__foreach_pow_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_pow_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_pow_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_sub
+SEXP cpp_torch_dispatch_namespace__foreach_sub(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_sub(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_sub(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_sub_
+SEXP cpp_torch_dispatch_namespace__foreach_sub_(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_sub_(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_sub_(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__foreach_sub_out
+SEXP cpp_torch_dispatch_namespace__foreach_sub_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__foreach_sub_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__foreach_sub_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__fused_adagrad
+SEXP cpp_torch_dispatch_namespace__fused_adagrad(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__fused_adagrad(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__fused_adagrad(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__fused_adagrad_
+SEXP cpp_torch_dispatch_namespace__fused_adagrad_(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__fused_adagrad_(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__fused_adagrad_(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__fused_adagrad_out
+SEXP cpp_torch_dispatch_namespace__fused_adagrad_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__fused_adagrad_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__fused_adagrad_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__fused_adam
+SEXP cpp_torch_dispatch_namespace__fused_adam(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__fused_adam(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__fused_adam(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__fused_adam_
+SEXP cpp_torch_dispatch_namespace__fused_adam_(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__fused_adam_(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__fused_adam_(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__fused_adam_out
+SEXP cpp_torch_dispatch_namespace__fused_adam_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__fused_adam_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__fused_adam_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__fused_adamw
+SEXP cpp_torch_dispatch_namespace__fused_adamw(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__fused_adamw(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__fused_adamw(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__fused_adamw_
+SEXP cpp_torch_dispatch_namespace__fused_adamw_(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__fused_adamw_(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__fused_adamw_(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__fused_adamw_out
+SEXP cpp_torch_dispatch_namespace__fused_adamw_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__fused_adamw_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__fused_adamw_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__fused_sgd
+SEXP cpp_torch_dispatch_namespace__fused_sgd(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__fused_sgd(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__fused_sgd(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__fused_sgd_
+SEXP cpp_torch_dispatch_namespace__fused_sgd_(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__fused_sgd_(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__fused_sgd_(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__fused_sgd_out
+SEXP cpp_torch_dispatch_namespace__fused_sgd_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__fused_sgd_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__fused_sgd_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__native_batch_norm_legit
+SEXP cpp_torch_dispatch_namespace__native_batch_norm_legit(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__native_batch_norm_legit(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__native_batch_norm_legit(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__native_batch_norm_legit_out
+SEXP cpp_torch_dispatch_namespace__native_batch_norm_legit_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__native_batch_norm_legit_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__native_batch_norm_legit_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__slow_conv2d_backward_out
+SEXP cpp_torch_dispatch_namespace__slow_conv2d_backward_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__slow_conv2d_backward_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__slow_conv2d_backward_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__sparse_log_softmax
+SEXP cpp_torch_dispatch_namespace__sparse_log_softmax(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__sparse_log_softmax(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__sparse_log_softmax(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__sparse_mm
+SEXP cpp_torch_dispatch_namespace__sparse_mm(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__sparse_mm(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__sparse_mm(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__sparse_softmax
+SEXP cpp_torch_dispatch_namespace__sparse_softmax(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__sparse_softmax(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__sparse_softmax(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__sparse_sum
+SEXP cpp_torch_dispatch_namespace__sparse_sum(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__sparse_sum(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__sparse_sum(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__test_autograd_multiple_dispatch
+SEXP cpp_torch_dispatch_namespace__test_autograd_multiple_dispatch(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__test_autograd_multiple_dispatch(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__test_autograd_multiple_dispatch(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__to_sparse_out
+SEXP cpp_torch_dispatch_namespace__to_sparse_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__to_sparse_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__to_sparse_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__upsample_bicubic2d_aa
+SEXP cpp_torch_dispatch_namespace__upsample_bicubic2d_aa(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__upsample_bicubic2d_aa(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__upsample_bicubic2d_aa(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__upsample_bilinear2d_aa
+SEXP cpp_torch_dispatch_namespace__upsample_bilinear2d_aa(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__upsample_bilinear2d_aa(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__upsample_bilinear2d_aa(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__upsample_nearest_exact1d
+SEXP cpp_torch_dispatch_namespace__upsample_nearest_exact1d(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__upsample_nearest_exact1d(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__upsample_nearest_exact1d(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__upsample_nearest_exact2d
+SEXP cpp_torch_dispatch_namespace__upsample_nearest_exact2d(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__upsample_nearest_exact2d(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__upsample_nearest_exact2d(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__upsample_nearest_exact3d
+SEXP cpp_torch_dispatch_namespace__upsample_nearest_exact3d(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__upsample_nearest_exact3d(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__upsample_nearest_exact3d(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace__use_cudnn_ctc_loss
+SEXP cpp_torch_dispatch_namespace__use_cudnn_ctc_loss(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace__use_cudnn_ctc_loss(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace__use_cudnn_ctc_loss(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_addmm
+SEXP cpp_torch_dispatch_namespace_addmm(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_addmm(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_addmm(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_addmm_out
+SEXP cpp_torch_dispatch_namespace_addmm_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_addmm_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_addmm_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_all
+SEXP cpp_torch_dispatch_namespace_all(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_all(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_all(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_all_out
+SEXP cpp_torch_dispatch_namespace_all_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_all_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_all_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_any
+SEXP cpp_torch_dispatch_namespace_any(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_any(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_any(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_any_out
+SEXP cpp_torch_dispatch_namespace_any_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_any_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_any_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_arange
+SEXP cpp_torch_dispatch_namespace_arange(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_arange(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_arange(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_arange_out
+SEXP cpp_torch_dispatch_namespace_arange_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_arange_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_arange_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_argsort
+SEXP cpp_torch_dispatch_namespace_argsort(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_argsort(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_argsort(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_atleast_1d
+SEXP cpp_torch_dispatch_namespace_atleast_1d(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_atleast_1d(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_atleast_1d(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_atleast_2d
+SEXP cpp_torch_dispatch_namespace_atleast_2d(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_atleast_2d(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_atleast_2d(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_atleast_3d
+SEXP cpp_torch_dispatch_namespace_atleast_3d(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_atleast_3d(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_atleast_3d(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_baddbmm
+SEXP cpp_torch_dispatch_namespace_baddbmm(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_baddbmm(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_baddbmm(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_baddbmm_out
+SEXP cpp_torch_dispatch_namespace_baddbmm_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_baddbmm_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_baddbmm_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_bartlett_window
+SEXP cpp_torch_dispatch_namespace_bartlett_window(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_bartlett_window(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_bartlett_window(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_bartlett_window_out
+SEXP cpp_torch_dispatch_namespace_bartlett_window_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_bartlett_window_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_bartlett_window_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_bernoulli
+SEXP cpp_torch_dispatch_namespace_bernoulli(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_bernoulli(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_bernoulli(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_bernoulli_out
+SEXP cpp_torch_dispatch_namespace_bernoulli_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_bernoulli_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_bernoulli_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_bitwise_and
+SEXP cpp_torch_dispatch_namespace_bitwise_and(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_bitwise_and(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_bitwise_and(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_bitwise_and_out
+SEXP cpp_torch_dispatch_namespace_bitwise_and_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_bitwise_and_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_bitwise_and_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_bitwise_left_shift
+SEXP cpp_torch_dispatch_namespace_bitwise_left_shift(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_bitwise_left_shift(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_bitwise_left_shift(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_bitwise_left_shift_out
+SEXP cpp_torch_dispatch_namespace_bitwise_left_shift_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_bitwise_left_shift_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_bitwise_left_shift_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_bitwise_or
+SEXP cpp_torch_dispatch_namespace_bitwise_or(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_bitwise_or(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_bitwise_or(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_bitwise_or_out
+SEXP cpp_torch_dispatch_namespace_bitwise_or_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_bitwise_or_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_bitwise_or_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_bitwise_right_shift
+SEXP cpp_torch_dispatch_namespace_bitwise_right_shift(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_bitwise_right_shift(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_bitwise_right_shift(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_bitwise_right_shift_out
+SEXP cpp_torch_dispatch_namespace_bitwise_right_shift_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_bitwise_right_shift_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_bitwise_right_shift_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_bitwise_xor
+SEXP cpp_torch_dispatch_namespace_bitwise_xor(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_bitwise_xor(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_bitwise_xor(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_bitwise_xor_out
+SEXP cpp_torch_dispatch_namespace_bitwise_xor_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_bitwise_xor_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_bitwise_xor_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_blackman_window
+SEXP cpp_torch_dispatch_namespace_blackman_window(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_blackman_window(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_blackman_window(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_blackman_window_out
+SEXP cpp_torch_dispatch_namespace_blackman_window_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_blackman_window_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_blackman_window_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_bmm
+SEXP cpp_torch_dispatch_namespace_bmm(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_bmm(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_bmm(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_bmm_out
+SEXP cpp_torch_dispatch_namespace_bmm_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_bmm_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_bmm_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_clamp
+SEXP cpp_torch_dispatch_namespace_clamp(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_clamp(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_clamp(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_clamp_
+SEXP cpp_torch_dispatch_namespace_clamp_(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_clamp_(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_clamp_(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_clamp_out
+SEXP cpp_torch_dispatch_namespace_clamp_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_clamp_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_clamp_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_clip
+SEXP cpp_torch_dispatch_namespace_clip(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_clip(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_clip(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_clip_
+SEXP cpp_torch_dispatch_namespace_clip_(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_clip_(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_clip_(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_clip_out
+SEXP cpp_torch_dispatch_namespace_clip_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_clip_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_clip_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_conv1d
+SEXP cpp_torch_dispatch_namespace_conv1d(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_conv1d(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_conv1d(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_conv2d
+SEXP cpp_torch_dispatch_namespace_conv2d(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_conv2d(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_conv2d(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_conv3d
+SEXP cpp_torch_dispatch_namespace_conv3d(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_conv3d(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_conv3d(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_count_nonzero
+SEXP cpp_torch_dispatch_namespace_count_nonzero(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_count_nonzero(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_count_nonzero(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_count_nonzero_out
+SEXP cpp_torch_dispatch_namespace_count_nonzero_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_count_nonzero_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_count_nonzero_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_ctc_loss
+SEXP cpp_torch_dispatch_namespace_ctc_loss(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_ctc_loss(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_ctc_loss(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_cumulative_trapezoid
+SEXP cpp_torch_dispatch_namespace_cumulative_trapezoid(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_cumulative_trapezoid(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_cumulative_trapezoid(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_dequantize
+SEXP cpp_torch_dispatch_namespace_dequantize(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_dequantize(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_dequantize(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_diagonal
+SEXP cpp_torch_dispatch_namespace_diagonal(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_diagonal(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_diagonal(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_div
+SEXP cpp_torch_dispatch_namespace_div(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_div(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_div(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_div_out
+SEXP cpp_torch_dispatch_namespace_div_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_div_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_div_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_divide
+SEXP cpp_torch_dispatch_namespace_divide(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_divide(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_divide(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_divide_out
+SEXP cpp_torch_dispatch_namespace_divide_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_divide_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_divide_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_dsplit
+SEXP cpp_torch_dispatch_namespace_dsplit(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_dsplit(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_dsplit(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_embedding_bag
+SEXP cpp_torch_dispatch_namespace_embedding_bag(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_embedding_bag(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_embedding_bag(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_empty
+SEXP cpp_torch_dispatch_namespace_empty(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_empty(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_empty(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_empty_out
+SEXP cpp_torch_dispatch_namespace_empty_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_empty_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_empty_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_eye
+SEXP cpp_torch_dispatch_namespace_eye(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_eye(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_eye(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_eye_out
+SEXP cpp_torch_dispatch_namespace_eye_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_eye_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_eye_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_fake_quantize_per_tensor_affine
+SEXP cpp_torch_dispatch_namespace_fake_quantize_per_tensor_affine(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_fake_quantize_per_tensor_affine(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_fake_quantize_per_tensor_affine(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_fbgemm_pack_quantized_matrix
+SEXP cpp_torch_dispatch_namespace_fbgemm_pack_quantized_matrix(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_fbgemm_pack_quantized_matrix(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_fbgemm_pack_quantized_matrix(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_flatten
+SEXP cpp_torch_dispatch_namespace_flatten(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_flatten(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_flatten(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_float_power
+SEXP cpp_torch_dispatch_namespace_float_power(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_float_power(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_float_power(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_float_power_out
+SEXP cpp_torch_dispatch_namespace_float_power_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_float_power_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_float_power_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_full
+SEXP cpp_torch_dispatch_namespace_full(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_full(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_full(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_full_out
+SEXP cpp_torch_dispatch_namespace_full_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_full_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_full_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_gradient
+SEXP cpp_torch_dispatch_namespace_gradient(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_gradient(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_gradient(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_gru
+SEXP cpp_torch_dispatch_namespace_gru(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_gru(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_gru(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_hamming_window
+SEXP cpp_torch_dispatch_namespace_hamming_window(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_hamming_window(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_hamming_window(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_hamming_window_out
+SEXP cpp_torch_dispatch_namespace_hamming_window_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_hamming_window_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_hamming_window_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_hann_window
+SEXP cpp_torch_dispatch_namespace_hann_window(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_hann_window(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_hann_window(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_hann_window_out
+SEXP cpp_torch_dispatch_namespace_hann_window_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_hann_window_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_hann_window_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_histogram
+SEXP cpp_torch_dispatch_namespace_histogram(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_histogram(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_histogram(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_histogram_out
+SEXP cpp_torch_dispatch_namespace_histogram_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_histogram_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_histogram_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_histogramdd
+SEXP cpp_torch_dispatch_namespace_histogramdd(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_histogramdd(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_histogramdd(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_hsplit
+SEXP cpp_torch_dispatch_namespace_hsplit(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_hsplit(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_hsplit(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_index_fill
+SEXP cpp_torch_dispatch_namespace_index_fill(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_index_fill(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_index_fill(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_isin
+SEXP cpp_torch_dispatch_namespace_isin(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_isin(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_isin(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_isin_out
+SEXP cpp_torch_dispatch_namespace_isin_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_isin_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_isin_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_kaiser_window
+SEXP cpp_torch_dispatch_namespace_kaiser_window(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_kaiser_window(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_kaiser_window(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_kaiser_window_out
+SEXP cpp_torch_dispatch_namespace_kaiser_window_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_kaiser_window_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_kaiser_window_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_linalg_cond
+SEXP cpp_torch_dispatch_namespace_linalg_cond(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_linalg_cond(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_linalg_cond(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_linalg_cond_out
+SEXP cpp_torch_dispatch_namespace_linalg_cond_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_linalg_cond_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_linalg_cond_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_linalg_matrix_norm
+SEXP cpp_torch_dispatch_namespace_linalg_matrix_norm(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_linalg_matrix_norm(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_linalg_matrix_norm(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_linalg_matrix_norm_out
+SEXP cpp_torch_dispatch_namespace_linalg_matrix_norm_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_linalg_matrix_norm_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_linalg_matrix_norm_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_linalg_matrix_rank
+SEXP cpp_torch_dispatch_namespace_linalg_matrix_rank(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_linalg_matrix_rank(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_linalg_matrix_rank(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_linalg_matrix_rank_out
+SEXP cpp_torch_dispatch_namespace_linalg_matrix_rank_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_linalg_matrix_rank_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_linalg_matrix_rank_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_linalg_norm
+SEXP cpp_torch_dispatch_namespace_linalg_norm(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_linalg_norm(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_linalg_norm(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_linalg_norm_out
+SEXP cpp_torch_dispatch_namespace_linalg_norm_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_linalg_norm_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_linalg_norm_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_linalg_pinv
+SEXP cpp_torch_dispatch_namespace_linalg_pinv(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_linalg_pinv(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_linalg_pinv(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_linalg_pinv_out
+SEXP cpp_torch_dispatch_namespace_linalg_pinv_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_linalg_pinv_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_linalg_pinv_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_linspace
+SEXP cpp_torch_dispatch_namespace_linspace(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_linspace(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_linspace(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_linspace_out
+SEXP cpp_torch_dispatch_namespace_linspace_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_linspace_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_linspace_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_logspace
+SEXP cpp_torch_dispatch_namespace_logspace(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_logspace(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_logspace(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_logspace_out
+SEXP cpp_torch_dispatch_namespace_logspace_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_logspace_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_logspace_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_lstm
+SEXP cpp_torch_dispatch_namespace_lstm(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_lstm(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_lstm(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_max
+SEXP cpp_torch_dispatch_namespace_max(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_max(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_max(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_max_out
+SEXP cpp_torch_dispatch_namespace_max_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_max_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_max_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_mean
+SEXP cpp_torch_dispatch_namespace_mean(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_mean(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_mean(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_mean_out
+SEXP cpp_torch_dispatch_namespace_mean_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_mean_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_mean_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_median
+SEXP cpp_torch_dispatch_namespace_median(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_median(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_median(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_median_out
+SEXP cpp_torch_dispatch_namespace_median_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_median_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_median_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_meshgrid
+SEXP cpp_torch_dispatch_namespace_meshgrid(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_meshgrid(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_meshgrid(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_min
+SEXP cpp_torch_dispatch_namespace_min(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_min(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_min(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_min_out
+SEXP cpp_torch_dispatch_namespace_min_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_min_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_min_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_mm
+SEXP cpp_torch_dispatch_namespace_mm(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_mm(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_mm(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_mm_out
+SEXP cpp_torch_dispatch_namespace_mm_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_mm_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_mm_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_moveaxis
+SEXP cpp_torch_dispatch_namespace_moveaxis(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_moveaxis(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_moveaxis(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_movedim
+SEXP cpp_torch_dispatch_namespace_movedim(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_movedim(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_movedim(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_nanmedian
+SEXP cpp_torch_dispatch_namespace_nanmedian(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_nanmedian(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_nanmedian(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_nanmedian_out
+SEXP cpp_torch_dispatch_namespace_nanmedian_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_nanmedian_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_nanmedian_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_nanquantile
+SEXP cpp_torch_dispatch_namespace_nanquantile(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_nanquantile(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_nanquantile(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_nanquantile_out
+SEXP cpp_torch_dispatch_namespace_nanquantile_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_nanquantile_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_nanquantile_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_narrow
+SEXP cpp_torch_dispatch_namespace_narrow(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_narrow(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_narrow(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_native_norm
+SEXP cpp_torch_dispatch_namespace_native_norm(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_native_norm(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_native_norm(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_native_norm_out
+SEXP cpp_torch_dispatch_namespace_native_norm_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_native_norm_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_native_norm_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_norm
+SEXP cpp_torch_dispatch_namespace_norm(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_norm(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_norm(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_norm_out
+SEXP cpp_torch_dispatch_namespace_norm_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_norm_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_norm_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_normal_out
+SEXP cpp_torch_dispatch_namespace_normal_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_normal_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_normal_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_nuclear_norm
+SEXP cpp_torch_dispatch_namespace_nuclear_norm(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_nuclear_norm(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_nuclear_norm(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_nuclear_norm_out
+SEXP cpp_torch_dispatch_namespace_nuclear_norm_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_nuclear_norm_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_nuclear_norm_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_ones
+SEXP cpp_torch_dispatch_namespace_ones(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_ones(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_ones(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_ones_out
+SEXP cpp_torch_dispatch_namespace_ones_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_ones_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_ones_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_pow
+SEXP cpp_torch_dispatch_namespace_pow(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_pow(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_pow(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_pow_out
+SEXP cpp_torch_dispatch_namespace_pow_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_pow_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_pow_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_prod
+SEXP cpp_torch_dispatch_namespace_prod(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_prod(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_prod(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_prod_out
+SEXP cpp_torch_dispatch_namespace_prod_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_prod_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_prod_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_quantile
+SEXP cpp_torch_dispatch_namespace_quantile(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_quantile(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_quantile(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_quantile_out
+SEXP cpp_torch_dispatch_namespace_quantile_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_quantile_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_quantile_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_quantize_per_tensor
+SEXP cpp_torch_dispatch_namespace_quantize_per_tensor(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_quantize_per_tensor(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_quantize_per_tensor(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_quantize_per_tensor_out
+SEXP cpp_torch_dispatch_namespace_quantize_per_tensor_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_quantize_per_tensor_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_quantize_per_tensor_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_rand
+SEXP cpp_torch_dispatch_namespace_rand(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_rand(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_rand(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_rand_out
+SEXP cpp_torch_dispatch_namespace_rand_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_rand_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_rand_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_randint
+SEXP cpp_torch_dispatch_namespace_randint(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_randint(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_randint(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_randint_like
+SEXP cpp_torch_dispatch_namespace_randint_like(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_randint_like(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_randint_like(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_randint_like_out
+SEXP cpp_torch_dispatch_namespace_randint_like_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_randint_like_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_randint_like_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_randint_out
+SEXP cpp_torch_dispatch_namespace_randint_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_randint_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_randint_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_randn
+SEXP cpp_torch_dispatch_namespace_randn(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_randn(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_randn(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_randn_out
+SEXP cpp_torch_dispatch_namespace_randn_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_randn_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_randn_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_random
+SEXP cpp_torch_dispatch_namespace_random(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_random(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_random(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_random_out
+SEXP cpp_torch_dispatch_namespace_random_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_random_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_random_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_randperm
+SEXP cpp_torch_dispatch_namespace_randperm(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_randperm(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_randperm(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_randperm_out
+SEXP cpp_torch_dispatch_namespace_randperm_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_randperm_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_randperm_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_remainder
+SEXP cpp_torch_dispatch_namespace_remainder(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_remainder(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_remainder(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_remainder_out
+SEXP cpp_torch_dispatch_namespace_remainder_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_remainder_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_remainder_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_repeat_interleave
+SEXP cpp_torch_dispatch_namespace_repeat_interleave(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_repeat_interleave(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_repeat_interleave(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_result_type
+SEXP cpp_torch_dispatch_namespace_result_type(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_result_type(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_result_type(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_rnn_relu
+SEXP cpp_torch_dispatch_namespace_rnn_relu(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_rnn_relu(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_rnn_relu(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_rnn_tanh
+SEXP cpp_torch_dispatch_namespace_rnn_tanh(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_rnn_tanh(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_rnn_tanh(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_round
+SEXP cpp_torch_dispatch_namespace_round(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_round(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_round(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_round_
+SEXP cpp_torch_dispatch_namespace_round_(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_round_(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_round_(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_round_out
+SEXP cpp_torch_dispatch_namespace_round_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_round_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_round_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_scatter
+SEXP cpp_torch_dispatch_namespace_scatter(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_scatter(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_scatter(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_scatter_out
+SEXP cpp_torch_dispatch_namespace_scatter_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_scatter_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_scatter_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_set
+SEXP cpp_torch_dispatch_namespace_set(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_set(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_set(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_set_out
+SEXP cpp_torch_dispatch_namespace_set_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_set_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_set_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_sort
+SEXP cpp_torch_dispatch_namespace_sort(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_sort(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_sort(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_sort_out
+SEXP cpp_torch_dispatch_namespace_sort_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_sort_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_sort_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_sparse_bsc_tensor
+SEXP cpp_torch_dispatch_namespace_sparse_bsc_tensor(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_sparse_bsc_tensor(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_sparse_bsc_tensor(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_sparse_bsr_tensor
+SEXP cpp_torch_dispatch_namespace_sparse_bsr_tensor(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_sparse_bsr_tensor(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_sparse_bsr_tensor(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_sparse_compressed_tensor
+SEXP cpp_torch_dispatch_namespace_sparse_compressed_tensor(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_sparse_compressed_tensor(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_sparse_compressed_tensor(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_sparse_coo_tensor
+SEXP cpp_torch_dispatch_namespace_sparse_coo_tensor(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_sparse_coo_tensor(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_sparse_coo_tensor(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_sparse_csc_tensor
+SEXP cpp_torch_dispatch_namespace_sparse_csc_tensor(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_sparse_csc_tensor(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_sparse_csc_tensor(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_sparse_csr_tensor
+SEXP cpp_torch_dispatch_namespace_sparse_csr_tensor(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_sparse_csr_tensor(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_sparse_csr_tensor(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_special_chebyshev_polynomial_t
+SEXP cpp_torch_dispatch_namespace_special_chebyshev_polynomial_t(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_special_chebyshev_polynomial_t(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_special_chebyshev_polynomial_t(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_special_chebyshev_polynomial_t_out
+SEXP cpp_torch_dispatch_namespace_special_chebyshev_polynomial_t_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_special_chebyshev_polynomial_t_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_special_chebyshev_polynomial_t_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_special_chebyshev_polynomial_u
+SEXP cpp_torch_dispatch_namespace_special_chebyshev_polynomial_u(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_special_chebyshev_polynomial_u(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_special_chebyshev_polynomial_u(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_special_chebyshev_polynomial_u_out
+SEXP cpp_torch_dispatch_namespace_special_chebyshev_polynomial_u_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_special_chebyshev_polynomial_u_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_special_chebyshev_polynomial_u_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_special_chebyshev_polynomial_v
+SEXP cpp_torch_dispatch_namespace_special_chebyshev_polynomial_v(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_special_chebyshev_polynomial_v(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_special_chebyshev_polynomial_v(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_special_chebyshev_polynomial_v_out
+SEXP cpp_torch_dispatch_namespace_special_chebyshev_polynomial_v_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_special_chebyshev_polynomial_v_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_special_chebyshev_polynomial_v_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_special_chebyshev_polynomial_w
+SEXP cpp_torch_dispatch_namespace_special_chebyshev_polynomial_w(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_special_chebyshev_polynomial_w(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_special_chebyshev_polynomial_w(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_special_chebyshev_polynomial_w_out
+SEXP cpp_torch_dispatch_namespace_special_chebyshev_polynomial_w_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_special_chebyshev_polynomial_w_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_special_chebyshev_polynomial_w_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_special_hermite_polynomial_h
+SEXP cpp_torch_dispatch_namespace_special_hermite_polynomial_h(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_special_hermite_polynomial_h(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_special_hermite_polynomial_h(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_special_hermite_polynomial_h_out
+SEXP cpp_torch_dispatch_namespace_special_hermite_polynomial_h_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_special_hermite_polynomial_h_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_special_hermite_polynomial_h_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_special_hermite_polynomial_he
+SEXP cpp_torch_dispatch_namespace_special_hermite_polynomial_he(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_special_hermite_polynomial_he(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_special_hermite_polynomial_he(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_special_hermite_polynomial_he_out
+SEXP cpp_torch_dispatch_namespace_special_hermite_polynomial_he_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_special_hermite_polynomial_he_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_special_hermite_polynomial_he_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_special_laguerre_polynomial_l
+SEXP cpp_torch_dispatch_namespace_special_laguerre_polynomial_l(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_special_laguerre_polynomial_l(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_special_laguerre_polynomial_l(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_special_laguerre_polynomial_l_out
+SEXP cpp_torch_dispatch_namespace_special_laguerre_polynomial_l_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_special_laguerre_polynomial_l_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_special_laguerre_polynomial_l_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_special_legendre_polynomial_p
+SEXP cpp_torch_dispatch_namespace_special_legendre_polynomial_p(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_special_legendre_polynomial_p(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_special_legendre_polynomial_p(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_special_legendre_polynomial_p_out
+SEXP cpp_torch_dispatch_namespace_special_legendre_polynomial_p_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_special_legendre_polynomial_p_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_special_legendre_polynomial_p_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_t
+SEXP cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_t(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_t(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_t(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_t_out
+SEXP cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_t_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_t_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_t_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_u
+SEXP cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_u(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_u(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_u(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_u_out
+SEXP cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_u_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_u_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_u_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_v
+SEXP cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_v(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_v(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_v(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_v_out
+SEXP cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_v_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_v_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_v_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_w
+SEXP cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_w(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_w(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_w(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_w_out
+SEXP cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_w_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_w_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_w_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_special_xlog1py
+SEXP cpp_torch_dispatch_namespace_special_xlog1py(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_special_xlog1py(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_special_xlog1py(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_special_xlog1py_out
+SEXP cpp_torch_dispatch_namespace_special_xlog1py_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_special_xlog1py_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_special_xlog1py_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_special_xlogy
+SEXP cpp_torch_dispatch_namespace_special_xlogy(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_special_xlogy(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_special_xlogy(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_special_xlogy_out
+SEXP cpp_torch_dispatch_namespace_special_xlogy_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_special_xlogy_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_special_xlogy_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_special_zeta
+SEXP cpp_torch_dispatch_namespace_special_zeta(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_special_zeta(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_special_zeta(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_special_zeta_out
+SEXP cpp_torch_dispatch_namespace_special_zeta_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_special_zeta_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_special_zeta_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_split
+SEXP cpp_torch_dispatch_namespace_split(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_split(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_split(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_squeeze
+SEXP cpp_torch_dispatch_namespace_squeeze(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_squeeze(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_squeeze(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_squeeze_copy
+SEXP cpp_torch_dispatch_namespace_squeeze_copy(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_squeeze_copy(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_squeeze_copy(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_squeeze_copy_out
+SEXP cpp_torch_dispatch_namespace_squeeze_copy_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_squeeze_copy_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_squeeze_copy_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_std
+SEXP cpp_torch_dispatch_namespace_std(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_std(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_std(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_std_mean
+SEXP cpp_torch_dispatch_namespace_std_mean(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_std_mean(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_std_mean(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_sum
+SEXP cpp_torch_dispatch_namespace_sum(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_sum(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_sum(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_sum_out
+SEXP cpp_torch_dispatch_namespace_sum_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_sum_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_sum_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_tensor_split
+SEXP cpp_torch_dispatch_namespace_tensor_split(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_tensor_split(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_tensor_split(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_transpose
+SEXP cpp_torch_dispatch_namespace_transpose(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_transpose(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_transpose(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_trapezoid
+SEXP cpp_torch_dispatch_namespace_trapezoid(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_trapezoid(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_trapezoid(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_trapz
+SEXP cpp_torch_dispatch_namespace_trapz(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_trapz(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_trapz(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_upsample_bicubic2d
+SEXP cpp_torch_dispatch_namespace_upsample_bicubic2d(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_upsample_bicubic2d(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_upsample_bicubic2d(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_upsample_bilinear2d
+SEXP cpp_torch_dispatch_namespace_upsample_bilinear2d(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_upsample_bilinear2d(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_upsample_bilinear2d(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_upsample_bilinear2d_out
+SEXP cpp_torch_dispatch_namespace_upsample_bilinear2d_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_upsample_bilinear2d_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_upsample_bilinear2d_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_upsample_linear1d
+SEXP cpp_torch_dispatch_namespace_upsample_linear1d(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_upsample_linear1d(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_upsample_linear1d(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_upsample_nearest1d
+SEXP cpp_torch_dispatch_namespace_upsample_nearest1d(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_upsample_nearest1d(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_upsample_nearest1d(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_upsample_nearest2d
+SEXP cpp_torch_dispatch_namespace_upsample_nearest2d(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_upsample_nearest2d(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_upsample_nearest2d(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_upsample_nearest2d_out
+SEXP cpp_torch_dispatch_namespace_upsample_nearest2d_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_upsample_nearest2d_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_upsample_nearest2d_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_upsample_nearest3d
+SEXP cpp_torch_dispatch_namespace_upsample_nearest3d(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_upsample_nearest3d(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_upsample_nearest3d(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_upsample_trilinear3d
+SEXP cpp_torch_dispatch_namespace_upsample_trilinear3d(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_upsample_trilinear3d(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_upsample_trilinear3d(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_var
+SEXP cpp_torch_dispatch_namespace_var(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_var(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_var(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_var_mean
+SEXP cpp_torch_dispatch_namespace_var_mean(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_var_mean(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_var_mean(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_view_copy
+SEXP cpp_torch_dispatch_namespace_view_copy(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_view_copy(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_view_copy(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_view_copy_out
+SEXP cpp_torch_dispatch_namespace_view_copy_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_view_copy_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_view_copy_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_vsplit
+SEXP cpp_torch_dispatch_namespace_vsplit(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_vsplit(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_vsplit(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_where
+SEXP cpp_torch_dispatch_namespace_where(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_where(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_where(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_xlogy
+SEXP cpp_torch_dispatch_namespace_xlogy(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_xlogy(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_xlogy(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_xlogy_out
+SEXP cpp_torch_dispatch_namespace_xlogy_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_xlogy_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_xlogy_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_zeros
+SEXP cpp_torch_dispatch_namespace_zeros(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_zeros(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_zeros(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_namespace_zeros_out
+SEXP cpp_torch_dispatch_namespace_zeros_out(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_namespace_zeros_out(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_namespace_zeros_out(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method__to_sparse
+SEXP cpp_torch_dispatch_method__to_sparse(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method__to_sparse(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method__to_sparse(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_align_to
+SEXP cpp_torch_dispatch_method_align_to(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_align_to(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_align_to(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_all
+SEXP cpp_torch_dispatch_method_all(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_all(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_all(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_any
+SEXP cpp_torch_dispatch_method_any(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_any(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_any(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_argsort
+SEXP cpp_torch_dispatch_method_argsort(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_argsort(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_argsort(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_bernoulli
+SEXP cpp_torch_dispatch_method_bernoulli(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_bernoulli(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_bernoulli(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_bernoulli_
+SEXP cpp_torch_dispatch_method_bernoulli_(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_bernoulli_(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_bernoulli_(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_clamp
+SEXP cpp_torch_dispatch_method_clamp(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_clamp(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_clamp(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_clamp_
+SEXP cpp_torch_dispatch_method_clamp_(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_clamp_(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_clamp_(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_clip
+SEXP cpp_torch_dispatch_method_clip(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_clip(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_clip(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_clip_
+SEXP cpp_torch_dispatch_method_clip_(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_clip_(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_clip_(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_count_nonzero
+SEXP cpp_torch_dispatch_method_count_nonzero(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_count_nonzero(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_count_nonzero(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_diagonal
+SEXP cpp_torch_dispatch_method_diagonal(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_diagonal(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_diagonal(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_div
+SEXP cpp_torch_dispatch_method_div(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_div(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_div(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_div_
+SEXP cpp_torch_dispatch_method_div_(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_div_(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_div_(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_divide
+SEXP cpp_torch_dispatch_method_divide(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_divide(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_divide(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_divide_
+SEXP cpp_torch_dispatch_method_divide_(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_divide_(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_divide_(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_dsplit
+SEXP cpp_torch_dispatch_method_dsplit(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_dsplit(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_dsplit(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_flatten
+SEXP cpp_torch_dispatch_method_flatten(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_flatten(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_flatten(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_histogram
+SEXP cpp_torch_dispatch_method_histogram(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_histogram(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_histogram(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_hsplit
+SEXP cpp_torch_dispatch_method_hsplit(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_hsplit(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_hsplit(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_index_fill
+SEXP cpp_torch_dispatch_method_index_fill(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_index_fill(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_index_fill(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_index_fill_
+SEXP cpp_torch_dispatch_method_index_fill_(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_index_fill_(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_index_fill_(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_max
+SEXP cpp_torch_dispatch_method_max(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_max(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_max(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_mean
+SEXP cpp_torch_dispatch_method_mean(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_mean(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_mean(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_median
+SEXP cpp_torch_dispatch_method_median(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_median(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_median(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_min
+SEXP cpp_torch_dispatch_method_min(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_min(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_min(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_moveaxis
+SEXP cpp_torch_dispatch_method_moveaxis(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_moveaxis(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_moveaxis(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_movedim
+SEXP cpp_torch_dispatch_method_movedim(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_movedim(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_movedim(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_nanmedian
+SEXP cpp_torch_dispatch_method_nanmedian(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_nanmedian(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_nanmedian(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_nanquantile
+SEXP cpp_torch_dispatch_method_nanquantile(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_nanquantile(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_nanquantile(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_narrow
+SEXP cpp_torch_dispatch_method_narrow(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_narrow(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_narrow(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_norm
+SEXP cpp_torch_dispatch_method_norm(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_norm(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_norm(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_prod
+SEXP cpp_torch_dispatch_method_prod(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_prod(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_prod(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_quantile
+SEXP cpp_torch_dispatch_method_quantile(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_quantile(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_quantile(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_random_
+SEXP cpp_torch_dispatch_method_random_(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_random_(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_random_(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_repeat_interleave
+SEXP cpp_torch_dispatch_method_repeat_interleave(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_repeat_interleave(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_repeat_interleave(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_round
+SEXP cpp_torch_dispatch_method_round(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_round(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_round(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_round_
+SEXP cpp_torch_dispatch_method_round_(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_round_(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_round_(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_scatter
+SEXP cpp_torch_dispatch_method_scatter(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_scatter(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_scatter(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_scatter_
+SEXP cpp_torch_dispatch_method_scatter_(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_scatter_(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_scatter_(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_set_
+SEXP cpp_torch_dispatch_method_set_(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_set_(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_set_(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_sort
+SEXP cpp_torch_dispatch_method_sort(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_sort(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_sort(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_split
+SEXP cpp_torch_dispatch_method_split(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_split(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_split(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_squeeze
+SEXP cpp_torch_dispatch_method_squeeze(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_squeeze(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_squeeze(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_squeeze_
+SEXP cpp_torch_dispatch_method_squeeze_(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_squeeze_(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_squeeze_(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_std
+SEXP cpp_torch_dispatch_method_std(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_std(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_std(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_sum
+SEXP cpp_torch_dispatch_method_sum(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_sum(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_sum(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_tensor_split
+SEXP cpp_torch_dispatch_method_tensor_split(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_tensor_split(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_tensor_split(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_to
+SEXP cpp_torch_dispatch_method_to(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_to(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_to(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_to_sparse
+SEXP cpp_torch_dispatch_method_to_sparse(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_to_sparse(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_to_sparse(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_transpose
+SEXP cpp_torch_dispatch_method_transpose(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_transpose(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_transpose(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_var
+SEXP cpp_torch_dispatch_method_var(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_var(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_var(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_view
+SEXP cpp_torch_dispatch_method_view(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_view(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_view(args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_torch_dispatch_method_vsplit
+SEXP cpp_torch_dispatch_method_vsplit(Rcpp::List args);
+RcppExport SEXP _torch_cpp_torch_dispatch_method_vsplit(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_torch_dispatch_method_vsplit(args));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_torch_generator
 XPtrTorchGenerator cpp_torch_generator();
 RcppExport SEXP _torch_cpp_torch_generator() {
@@ -48152,6 +51622,52 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_tensor_to_shm
+Rcpp::List cpp_tensor_to_shm(torch::Tensor tensor);
+RcppExport SEXP _torch_cpp_tensor_to_shm(SEXP tensorSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< torch::Tensor >::type tensor(tensorSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_tensor_to_shm(tensor));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_tensor_from_shm
+torch::Tensor cpp_tensor_from_shm(std::string name, double nbytes_dbl, std::vector<int64_t> shape, XPtrTorchTensorOptions options);
+RcppExport SEXP _torch_cpp_tensor_from_shm(SEXP nameSEXP, SEXP nbytes_dblSEXP, SEXP shapeSEXP, SEXP optionsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type name(nameSEXP);
+    Rcpp::traits::input_parameter< double >::type nbytes_dbl(nbytes_dblSEXP);
+    Rcpp::traits::input_parameter< std::vector<int64_t> >::type shape(shapeSEXP);
+    Rcpp::traits::input_parameter< XPtrTorchTensorOptions >::type options(optionsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_tensor_from_shm(name, nbytes_dbl, shape, options));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_shm_exists
+bool cpp_shm_exists(std::string name);
+RcppExport SEXP _torch_cpp_shm_exists(SEXP nameSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type name(nameSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_shm_exists(name));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_shm_unlink
+void cpp_shm_unlink(std::string name);
+RcppExport SEXP _torch_cpp_shm_unlink(SEXP nameSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type name(nameSEXP);
+    cpp_shm_unlink(name);
+    return R_NilValue;
+END_RCPP
+}
 // cpp_torch_tensor_dtype
 Rcpp::XPtr<XPtrTorchDtype> cpp_torch_tensor_dtype(torch::Tensor x);
 RcppExport SEXP _torch_cpp_torch_tensor_dtype(SEXP xSEXP) {
@@ -48727,17 +52243,16 @@ static const R_CallMethodDef CallEntries[] = {
     {"_torch_cpp_autograd_node_next_edges", (DL_FUNC) &_torch_cpp_autograd_node_next_edges, 1},
     {"_torch_cpp_autograd_edge_function", (DL_FUNC) &_torch_cpp_autograd_edge_function, 1},
     {"_torch_cpp_autograd_grad", (DL_FUNC) &_torch_cpp_autograd_grad, 6},
-    {"_torch_cpp_set_lantern_allocator", (DL_FUNC) &_torch_cpp_set_lantern_allocator, 1},
+    {"_torch_cpp_set_lantern_allocator", (DL_FUNC) &_torch_cpp_set_lantern_allocator, 4},
+    {"_torch_cpp_cpu_cache_flush", (DL_FUNC) &_torch_cpp_cpu_cache_flush, 0},
     {"_torch_cpp_set_cuda_allocator_allocator_thresholds", (DL_FUNC) &_torch_cpp_set_cuda_allocator_allocator_thresholds, 3},
     {"_torch_cpp_autograd_zero_grad", (DL_FUNC) &_torch_cpp_autograd_zero_grad, 2},
     {"_torch_cpp_backends_mkldnn_is_available", (DL_FUNC) &_torch_cpp_backends_mkldnn_is_available, 0},
     {"_torch_cpp_backends_mkl_is_available", (DL_FUNC) &_torch_cpp_backends_mkl_is_available, 0},
     {"_torch_cpp_backends_openmp_is_available", (DL_FUNC) &_torch_cpp_backends_openmp_is_available, 0},
     {"_torch_cpp_backends_mps_is_available", (DL_FUNC) &_torch_cpp_backends_mps_is_available, 0},
+    {"_torch_cpp_mps_synchronize", (DL_FUNC) &_torch_cpp_mps_synchronize, 0},
     {"_torch_cpp_arg_to_torch_type", (DL_FUNC) &_torch_cpp_arg_to_torch_type, 3},
-    {"_torch_cpp_clean_names", (DL_FUNC) &_torch_cpp_clean_names, 2},
-    {"_torch_cpp_make_function_name", (DL_FUNC) &_torch_cpp_make_function_name, 4},
-    {"_torch_create_fn_name", (DL_FUNC) &_torch_create_fn_name, 5},
     {"_torch_cpp_contrib_torch_sparsemax", (DL_FUNC) &_torch_cpp_contrib_torch_sparsemax, 2},
     {"_torch_cpp_contrib_torch_sort_vertices", (DL_FUNC) &_torch_cpp_contrib_torch_sort_vertices, 3},
     {"_torch_cpp_cuda_is_available", (DL_FUNC) &_torch_cpp_cuda_is_available, 0},
@@ -52436,6 +55951,355 @@ static const R_CallMethodDef CallEntries[] = {
     {"_torch_cpp_torch_namespace__fused_adagrad_self_TensorList_grads_TensorList_state_sums_TensorList_state_steps_TensorList_lr_double_lr_decay_double_weight_decay_double_eps_double_maximize_bool", (DL_FUNC) &_torch_cpp_torch_namespace__fused_adagrad_self_TensorList_grads_TensorList_state_sums_TensorList_state_steps_TensorList_lr_double_lr_decay_double_weight_decay_double_eps_double_maximize_bool, 11},
     {"_torch_cpp_torch_namespace__fused_adagrad_out_out_TensorList_self_TensorList_grads_TensorList_state_sums_TensorList_state_steps_TensorList_lr_Tensor_lr_decay_double_weight_decay_double_eps_double_maximize_bool", (DL_FUNC) &_torch_cpp_torch_namespace__fused_adagrad_out_out_TensorList_self_TensorList_grads_TensorList_state_sums_TensorList_state_steps_TensorList_lr_Tensor_lr_decay_double_weight_decay_double_eps_double_maximize_bool, 12},
     {"_torch_cpp_torch_namespace__fused_adagrad_self_TensorList_grads_TensorList_state_sums_TensorList_state_steps_TensorList_lr_Tensor_lr_decay_double_weight_decay_double_eps_double_maximize_bool", (DL_FUNC) &_torch_cpp_torch_namespace__fused_adagrad_self_TensorList_grads_TensorList_state_sums_TensorList_state_steps_TensorList_lr_Tensor_lr_decay_double_weight_decay_double_eps_double_maximize_bool, 11},
+    {"_torch_cpp_torch_dispatch_namespace__aminmax", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__aminmax, 1},
+    {"_torch_cpp_torch_dispatch_namespace__aminmax_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__aminmax_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace__assert_async", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__assert_async, 1},
+    {"_torch_cpp_torch_dispatch_namespace__convolution", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__convolution, 1},
+    {"_torch_cpp_torch_dispatch_namespace__ctc_loss", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__ctc_loss, 1},
+    {"_torch_cpp_torch_dispatch_namespace__ctc_loss_backward", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__ctc_loss_backward, 1},
+    {"_torch_cpp_torch_dispatch_namespace__ctc_loss_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__ctc_loss_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace__cudnn_ctc_loss", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__cudnn_ctc_loss, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_add", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_add, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_add_", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_add_, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_add_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_add_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_addcdiv", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_addcdiv, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_addcdiv_", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_addcdiv_, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_addcdiv_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_addcdiv_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_addcmul", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_addcmul, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_addcmul_", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_addcmul_, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_addcmul_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_addcmul_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_clamp_max", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_clamp_max, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_clamp_max_", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_clamp_max_, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_clamp_max_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_clamp_max_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_clamp_min", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_clamp_min, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_clamp_min_", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_clamp_min_, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_clamp_min_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_clamp_min_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_div", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_div, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_div_", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_div_, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_div_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_div_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_lerp", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_lerp, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_lerp_", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_lerp_, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_lerp_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_lerp_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_maximum", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_maximum, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_maximum_", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_maximum_, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_maximum_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_maximum_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_minimum", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_minimum, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_minimum_", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_minimum_, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_minimum_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_minimum_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_mul", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_mul, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_mul_", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_mul_, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_mul_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_mul_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_pow", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_pow, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_pow_", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_pow_, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_pow_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_pow_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_sub", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_sub, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_sub_", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_sub_, 1},
+    {"_torch_cpp_torch_dispatch_namespace__foreach_sub_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__foreach_sub_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace__fused_adagrad", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__fused_adagrad, 1},
+    {"_torch_cpp_torch_dispatch_namespace__fused_adagrad_", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__fused_adagrad_, 1},
+    {"_torch_cpp_torch_dispatch_namespace__fused_adagrad_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__fused_adagrad_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace__fused_adam", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__fused_adam, 1},
+    {"_torch_cpp_torch_dispatch_namespace__fused_adam_", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__fused_adam_, 1},
+    {"_torch_cpp_torch_dispatch_namespace__fused_adam_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__fused_adam_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace__fused_adamw", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__fused_adamw, 1},
+    {"_torch_cpp_torch_dispatch_namespace__fused_adamw_", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__fused_adamw_, 1},
+    {"_torch_cpp_torch_dispatch_namespace__fused_adamw_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__fused_adamw_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace__fused_sgd", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__fused_sgd, 1},
+    {"_torch_cpp_torch_dispatch_namespace__fused_sgd_", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__fused_sgd_, 1},
+    {"_torch_cpp_torch_dispatch_namespace__fused_sgd_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__fused_sgd_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace__native_batch_norm_legit", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__native_batch_norm_legit, 1},
+    {"_torch_cpp_torch_dispatch_namespace__native_batch_norm_legit_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__native_batch_norm_legit_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace__slow_conv2d_backward_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__slow_conv2d_backward_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace__sparse_log_softmax", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__sparse_log_softmax, 1},
+    {"_torch_cpp_torch_dispatch_namespace__sparse_mm", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__sparse_mm, 1},
+    {"_torch_cpp_torch_dispatch_namespace__sparse_softmax", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__sparse_softmax, 1},
+    {"_torch_cpp_torch_dispatch_namespace__sparse_sum", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__sparse_sum, 1},
+    {"_torch_cpp_torch_dispatch_namespace__test_autograd_multiple_dispatch", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__test_autograd_multiple_dispatch, 1},
+    {"_torch_cpp_torch_dispatch_namespace__to_sparse_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__to_sparse_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace__upsample_bicubic2d_aa", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__upsample_bicubic2d_aa, 1},
+    {"_torch_cpp_torch_dispatch_namespace__upsample_bilinear2d_aa", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__upsample_bilinear2d_aa, 1},
+    {"_torch_cpp_torch_dispatch_namespace__upsample_nearest_exact1d", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__upsample_nearest_exact1d, 1},
+    {"_torch_cpp_torch_dispatch_namespace__upsample_nearest_exact2d", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__upsample_nearest_exact2d, 1},
+    {"_torch_cpp_torch_dispatch_namespace__upsample_nearest_exact3d", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__upsample_nearest_exact3d, 1},
+    {"_torch_cpp_torch_dispatch_namespace__use_cudnn_ctc_loss", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace__use_cudnn_ctc_loss, 1},
+    {"_torch_cpp_torch_dispatch_namespace_addmm", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_addmm, 1},
+    {"_torch_cpp_torch_dispatch_namespace_addmm_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_addmm_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_all", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_all, 1},
+    {"_torch_cpp_torch_dispatch_namespace_all_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_all_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_any", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_any, 1},
+    {"_torch_cpp_torch_dispatch_namespace_any_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_any_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_arange", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_arange, 1},
+    {"_torch_cpp_torch_dispatch_namespace_arange_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_arange_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_argsort", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_argsort, 1},
+    {"_torch_cpp_torch_dispatch_namespace_atleast_1d", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_atleast_1d, 1},
+    {"_torch_cpp_torch_dispatch_namespace_atleast_2d", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_atleast_2d, 1},
+    {"_torch_cpp_torch_dispatch_namespace_atleast_3d", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_atleast_3d, 1},
+    {"_torch_cpp_torch_dispatch_namespace_baddbmm", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_baddbmm, 1},
+    {"_torch_cpp_torch_dispatch_namespace_baddbmm_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_baddbmm_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_bartlett_window", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_bartlett_window, 1},
+    {"_torch_cpp_torch_dispatch_namespace_bartlett_window_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_bartlett_window_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_bernoulli", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_bernoulli, 1},
+    {"_torch_cpp_torch_dispatch_namespace_bernoulli_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_bernoulli_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_bitwise_and", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_bitwise_and, 1},
+    {"_torch_cpp_torch_dispatch_namespace_bitwise_and_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_bitwise_and_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_bitwise_left_shift", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_bitwise_left_shift, 1},
+    {"_torch_cpp_torch_dispatch_namespace_bitwise_left_shift_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_bitwise_left_shift_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_bitwise_or", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_bitwise_or, 1},
+    {"_torch_cpp_torch_dispatch_namespace_bitwise_or_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_bitwise_or_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_bitwise_right_shift", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_bitwise_right_shift, 1},
+    {"_torch_cpp_torch_dispatch_namespace_bitwise_right_shift_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_bitwise_right_shift_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_bitwise_xor", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_bitwise_xor, 1},
+    {"_torch_cpp_torch_dispatch_namespace_bitwise_xor_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_bitwise_xor_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_blackman_window", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_blackman_window, 1},
+    {"_torch_cpp_torch_dispatch_namespace_blackman_window_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_blackman_window_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_bmm", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_bmm, 1},
+    {"_torch_cpp_torch_dispatch_namespace_bmm_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_bmm_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_clamp", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_clamp, 1},
+    {"_torch_cpp_torch_dispatch_namespace_clamp_", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_clamp_, 1},
+    {"_torch_cpp_torch_dispatch_namespace_clamp_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_clamp_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_clip", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_clip, 1},
+    {"_torch_cpp_torch_dispatch_namespace_clip_", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_clip_, 1},
+    {"_torch_cpp_torch_dispatch_namespace_clip_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_clip_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_conv1d", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_conv1d, 1},
+    {"_torch_cpp_torch_dispatch_namespace_conv2d", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_conv2d, 1},
+    {"_torch_cpp_torch_dispatch_namespace_conv3d", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_conv3d, 1},
+    {"_torch_cpp_torch_dispatch_namespace_count_nonzero", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_count_nonzero, 1},
+    {"_torch_cpp_torch_dispatch_namespace_count_nonzero_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_count_nonzero_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_ctc_loss", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_ctc_loss, 1},
+    {"_torch_cpp_torch_dispatch_namespace_cumulative_trapezoid", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_cumulative_trapezoid, 1},
+    {"_torch_cpp_torch_dispatch_namespace_dequantize", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_dequantize, 1},
+    {"_torch_cpp_torch_dispatch_namespace_diagonal", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_diagonal, 1},
+    {"_torch_cpp_torch_dispatch_namespace_div", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_div, 1},
+    {"_torch_cpp_torch_dispatch_namespace_div_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_div_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_divide", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_divide, 1},
+    {"_torch_cpp_torch_dispatch_namespace_divide_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_divide_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_dsplit", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_dsplit, 1},
+    {"_torch_cpp_torch_dispatch_namespace_embedding_bag", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_embedding_bag, 1},
+    {"_torch_cpp_torch_dispatch_namespace_empty", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_empty, 1},
+    {"_torch_cpp_torch_dispatch_namespace_empty_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_empty_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_eye", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_eye, 1},
+    {"_torch_cpp_torch_dispatch_namespace_eye_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_eye_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_fake_quantize_per_tensor_affine", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_fake_quantize_per_tensor_affine, 1},
+    {"_torch_cpp_torch_dispatch_namespace_fbgemm_pack_quantized_matrix", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_fbgemm_pack_quantized_matrix, 1},
+    {"_torch_cpp_torch_dispatch_namespace_flatten", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_flatten, 1},
+    {"_torch_cpp_torch_dispatch_namespace_float_power", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_float_power, 1},
+    {"_torch_cpp_torch_dispatch_namespace_float_power_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_float_power_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_full", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_full, 1},
+    {"_torch_cpp_torch_dispatch_namespace_full_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_full_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_gradient", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_gradient, 1},
+    {"_torch_cpp_torch_dispatch_namespace_gru", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_gru, 1},
+    {"_torch_cpp_torch_dispatch_namespace_hamming_window", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_hamming_window, 1},
+    {"_torch_cpp_torch_dispatch_namespace_hamming_window_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_hamming_window_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_hann_window", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_hann_window, 1},
+    {"_torch_cpp_torch_dispatch_namespace_hann_window_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_hann_window_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_histogram", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_histogram, 1},
+    {"_torch_cpp_torch_dispatch_namespace_histogram_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_histogram_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_histogramdd", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_histogramdd, 1},
+    {"_torch_cpp_torch_dispatch_namespace_hsplit", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_hsplit, 1},
+    {"_torch_cpp_torch_dispatch_namespace_index_fill", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_index_fill, 1},
+    {"_torch_cpp_torch_dispatch_namespace_isin", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_isin, 1},
+    {"_torch_cpp_torch_dispatch_namespace_isin_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_isin_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_kaiser_window", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_kaiser_window, 1},
+    {"_torch_cpp_torch_dispatch_namespace_kaiser_window_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_kaiser_window_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_linalg_cond", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_linalg_cond, 1},
+    {"_torch_cpp_torch_dispatch_namespace_linalg_cond_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_linalg_cond_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_linalg_matrix_norm", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_linalg_matrix_norm, 1},
+    {"_torch_cpp_torch_dispatch_namespace_linalg_matrix_norm_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_linalg_matrix_norm_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_linalg_matrix_rank", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_linalg_matrix_rank, 1},
+    {"_torch_cpp_torch_dispatch_namespace_linalg_matrix_rank_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_linalg_matrix_rank_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_linalg_norm", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_linalg_norm, 1},
+    {"_torch_cpp_torch_dispatch_namespace_linalg_norm_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_linalg_norm_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_linalg_pinv", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_linalg_pinv, 1},
+    {"_torch_cpp_torch_dispatch_namespace_linalg_pinv_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_linalg_pinv_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_linspace", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_linspace, 1},
+    {"_torch_cpp_torch_dispatch_namespace_linspace_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_linspace_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_logspace", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_logspace, 1},
+    {"_torch_cpp_torch_dispatch_namespace_logspace_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_logspace_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_lstm", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_lstm, 1},
+    {"_torch_cpp_torch_dispatch_namespace_max", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_max, 1},
+    {"_torch_cpp_torch_dispatch_namespace_max_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_max_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_mean", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_mean, 1},
+    {"_torch_cpp_torch_dispatch_namespace_mean_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_mean_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_median", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_median, 1},
+    {"_torch_cpp_torch_dispatch_namespace_median_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_median_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_meshgrid", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_meshgrid, 1},
+    {"_torch_cpp_torch_dispatch_namespace_min", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_min, 1},
+    {"_torch_cpp_torch_dispatch_namespace_min_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_min_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_mm", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_mm, 1},
+    {"_torch_cpp_torch_dispatch_namespace_mm_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_mm_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_moveaxis", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_moveaxis, 1},
+    {"_torch_cpp_torch_dispatch_namespace_movedim", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_movedim, 1},
+    {"_torch_cpp_torch_dispatch_namespace_nanmedian", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_nanmedian, 1},
+    {"_torch_cpp_torch_dispatch_namespace_nanmedian_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_nanmedian_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_nanquantile", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_nanquantile, 1},
+    {"_torch_cpp_torch_dispatch_namespace_nanquantile_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_nanquantile_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_narrow", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_narrow, 1},
+    {"_torch_cpp_torch_dispatch_namespace_native_norm", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_native_norm, 1},
+    {"_torch_cpp_torch_dispatch_namespace_native_norm_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_native_norm_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_norm", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_norm, 1},
+    {"_torch_cpp_torch_dispatch_namespace_norm_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_norm_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_normal_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_normal_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_nuclear_norm", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_nuclear_norm, 1},
+    {"_torch_cpp_torch_dispatch_namespace_nuclear_norm_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_nuclear_norm_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_ones", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_ones, 1},
+    {"_torch_cpp_torch_dispatch_namespace_ones_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_ones_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_pow", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_pow, 1},
+    {"_torch_cpp_torch_dispatch_namespace_pow_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_pow_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_prod", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_prod, 1},
+    {"_torch_cpp_torch_dispatch_namespace_prod_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_prod_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_quantile", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_quantile, 1},
+    {"_torch_cpp_torch_dispatch_namespace_quantile_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_quantile_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_quantize_per_tensor", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_quantize_per_tensor, 1},
+    {"_torch_cpp_torch_dispatch_namespace_quantize_per_tensor_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_quantize_per_tensor_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_rand", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_rand, 1},
+    {"_torch_cpp_torch_dispatch_namespace_rand_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_rand_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_randint", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_randint, 1},
+    {"_torch_cpp_torch_dispatch_namespace_randint_like", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_randint_like, 1},
+    {"_torch_cpp_torch_dispatch_namespace_randint_like_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_randint_like_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_randint_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_randint_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_randn", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_randn, 1},
+    {"_torch_cpp_torch_dispatch_namespace_randn_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_randn_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_random", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_random, 1},
+    {"_torch_cpp_torch_dispatch_namespace_random_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_random_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_randperm", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_randperm, 1},
+    {"_torch_cpp_torch_dispatch_namespace_randperm_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_randperm_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_remainder", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_remainder, 1},
+    {"_torch_cpp_torch_dispatch_namespace_remainder_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_remainder_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_repeat_interleave", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_repeat_interleave, 1},
+    {"_torch_cpp_torch_dispatch_namespace_result_type", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_result_type, 1},
+    {"_torch_cpp_torch_dispatch_namespace_rnn_relu", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_rnn_relu, 1},
+    {"_torch_cpp_torch_dispatch_namespace_rnn_tanh", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_rnn_tanh, 1},
+    {"_torch_cpp_torch_dispatch_namespace_round", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_round, 1},
+    {"_torch_cpp_torch_dispatch_namespace_round_", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_round_, 1},
+    {"_torch_cpp_torch_dispatch_namespace_round_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_round_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_scatter", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_scatter, 1},
+    {"_torch_cpp_torch_dispatch_namespace_scatter_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_scatter_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_set", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_set, 1},
+    {"_torch_cpp_torch_dispatch_namespace_set_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_set_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_sort", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_sort, 1},
+    {"_torch_cpp_torch_dispatch_namespace_sort_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_sort_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_sparse_bsc_tensor", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_sparse_bsc_tensor, 1},
+    {"_torch_cpp_torch_dispatch_namespace_sparse_bsr_tensor", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_sparse_bsr_tensor, 1},
+    {"_torch_cpp_torch_dispatch_namespace_sparse_compressed_tensor", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_sparse_compressed_tensor, 1},
+    {"_torch_cpp_torch_dispatch_namespace_sparse_coo_tensor", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_sparse_coo_tensor, 1},
+    {"_torch_cpp_torch_dispatch_namespace_sparse_csc_tensor", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_sparse_csc_tensor, 1},
+    {"_torch_cpp_torch_dispatch_namespace_sparse_csr_tensor", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_sparse_csr_tensor, 1},
+    {"_torch_cpp_torch_dispatch_namespace_special_chebyshev_polynomial_t", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_special_chebyshev_polynomial_t, 1},
+    {"_torch_cpp_torch_dispatch_namespace_special_chebyshev_polynomial_t_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_special_chebyshev_polynomial_t_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_special_chebyshev_polynomial_u", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_special_chebyshev_polynomial_u, 1},
+    {"_torch_cpp_torch_dispatch_namespace_special_chebyshev_polynomial_u_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_special_chebyshev_polynomial_u_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_special_chebyshev_polynomial_v", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_special_chebyshev_polynomial_v, 1},
+    {"_torch_cpp_torch_dispatch_namespace_special_chebyshev_polynomial_v_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_special_chebyshev_polynomial_v_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_special_chebyshev_polynomial_w", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_special_chebyshev_polynomial_w, 1},
+    {"_torch_cpp_torch_dispatch_namespace_special_chebyshev_polynomial_w_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_special_chebyshev_polynomial_w_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_special_hermite_polynomial_h", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_special_hermite_polynomial_h, 1},
+    {"_torch_cpp_torch_dispatch_namespace_special_hermite_polynomial_h_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_special_hermite_polynomial_h_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_special_hermite_polynomial_he", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_special_hermite_polynomial_he, 1},
+    {"_torch_cpp_torch_dispatch_namespace_special_hermite_polynomial_he_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_special_hermite_polynomial_he_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_special_laguerre_polynomial_l", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_special_laguerre_polynomial_l, 1},
+    {"_torch_cpp_torch_dispatch_namespace_special_laguerre_polynomial_l_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_special_laguerre_polynomial_l_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_special_legendre_polynomial_p", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_special_legendre_polynomial_p, 1},
+    {"_torch_cpp_torch_dispatch_namespace_special_legendre_polynomial_p_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_special_legendre_polynomial_p_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_t", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_t, 1},
+    {"_torch_cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_t_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_t_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_u", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_u, 1},
+    {"_torch_cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_u_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_u_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_v", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_v, 1},
+    {"_torch_cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_v_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_v_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_w", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_w, 1},
+    {"_torch_cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_w_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_special_shifted_chebyshev_polynomial_w_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_special_xlog1py", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_special_xlog1py, 1},
+    {"_torch_cpp_torch_dispatch_namespace_special_xlog1py_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_special_xlog1py_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_special_xlogy", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_special_xlogy, 1},
+    {"_torch_cpp_torch_dispatch_namespace_special_xlogy_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_special_xlogy_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_special_zeta", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_special_zeta, 1},
+    {"_torch_cpp_torch_dispatch_namespace_special_zeta_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_special_zeta_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_split", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_split, 1},
+    {"_torch_cpp_torch_dispatch_namespace_squeeze", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_squeeze, 1},
+    {"_torch_cpp_torch_dispatch_namespace_squeeze_copy", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_squeeze_copy, 1},
+    {"_torch_cpp_torch_dispatch_namespace_squeeze_copy_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_squeeze_copy_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_std", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_std, 1},
+    {"_torch_cpp_torch_dispatch_namespace_std_mean", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_std_mean, 1},
+    {"_torch_cpp_torch_dispatch_namespace_sum", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_sum, 1},
+    {"_torch_cpp_torch_dispatch_namespace_sum_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_sum_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_tensor_split", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_tensor_split, 1},
+    {"_torch_cpp_torch_dispatch_namespace_transpose", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_transpose, 1},
+    {"_torch_cpp_torch_dispatch_namespace_trapezoid", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_trapezoid, 1},
+    {"_torch_cpp_torch_dispatch_namespace_trapz", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_trapz, 1},
+    {"_torch_cpp_torch_dispatch_namespace_upsample_bicubic2d", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_upsample_bicubic2d, 1},
+    {"_torch_cpp_torch_dispatch_namespace_upsample_bilinear2d", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_upsample_bilinear2d, 1},
+    {"_torch_cpp_torch_dispatch_namespace_upsample_bilinear2d_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_upsample_bilinear2d_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_upsample_linear1d", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_upsample_linear1d, 1},
+    {"_torch_cpp_torch_dispatch_namespace_upsample_nearest1d", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_upsample_nearest1d, 1},
+    {"_torch_cpp_torch_dispatch_namespace_upsample_nearest2d", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_upsample_nearest2d, 1},
+    {"_torch_cpp_torch_dispatch_namespace_upsample_nearest2d_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_upsample_nearest2d_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_upsample_nearest3d", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_upsample_nearest3d, 1},
+    {"_torch_cpp_torch_dispatch_namespace_upsample_trilinear3d", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_upsample_trilinear3d, 1},
+    {"_torch_cpp_torch_dispatch_namespace_var", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_var, 1},
+    {"_torch_cpp_torch_dispatch_namespace_var_mean", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_var_mean, 1},
+    {"_torch_cpp_torch_dispatch_namespace_view_copy", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_view_copy, 1},
+    {"_torch_cpp_torch_dispatch_namespace_view_copy_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_view_copy_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_vsplit", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_vsplit, 1},
+    {"_torch_cpp_torch_dispatch_namespace_where", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_where, 1},
+    {"_torch_cpp_torch_dispatch_namespace_xlogy", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_xlogy, 1},
+    {"_torch_cpp_torch_dispatch_namespace_xlogy_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_xlogy_out, 1},
+    {"_torch_cpp_torch_dispatch_namespace_zeros", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_zeros, 1},
+    {"_torch_cpp_torch_dispatch_namespace_zeros_out", (DL_FUNC) &_torch_cpp_torch_dispatch_namespace_zeros_out, 1},
+    {"_torch_cpp_torch_dispatch_method__to_sparse", (DL_FUNC) &_torch_cpp_torch_dispatch_method__to_sparse, 1},
+    {"_torch_cpp_torch_dispatch_method_align_to", (DL_FUNC) &_torch_cpp_torch_dispatch_method_align_to, 1},
+    {"_torch_cpp_torch_dispatch_method_all", (DL_FUNC) &_torch_cpp_torch_dispatch_method_all, 1},
+    {"_torch_cpp_torch_dispatch_method_any", (DL_FUNC) &_torch_cpp_torch_dispatch_method_any, 1},
+    {"_torch_cpp_torch_dispatch_method_argsort", (DL_FUNC) &_torch_cpp_torch_dispatch_method_argsort, 1},
+    {"_torch_cpp_torch_dispatch_method_bernoulli", (DL_FUNC) &_torch_cpp_torch_dispatch_method_bernoulli, 1},
+    {"_torch_cpp_torch_dispatch_method_bernoulli_", (DL_FUNC) &_torch_cpp_torch_dispatch_method_bernoulli_, 1},
+    {"_torch_cpp_torch_dispatch_method_clamp", (DL_FUNC) &_torch_cpp_torch_dispatch_method_clamp, 1},
+    {"_torch_cpp_torch_dispatch_method_clamp_", (DL_FUNC) &_torch_cpp_torch_dispatch_method_clamp_, 1},
+    {"_torch_cpp_torch_dispatch_method_clip", (DL_FUNC) &_torch_cpp_torch_dispatch_method_clip, 1},
+    {"_torch_cpp_torch_dispatch_method_clip_", (DL_FUNC) &_torch_cpp_torch_dispatch_method_clip_, 1},
+    {"_torch_cpp_torch_dispatch_method_count_nonzero", (DL_FUNC) &_torch_cpp_torch_dispatch_method_count_nonzero, 1},
+    {"_torch_cpp_torch_dispatch_method_diagonal", (DL_FUNC) &_torch_cpp_torch_dispatch_method_diagonal, 1},
+    {"_torch_cpp_torch_dispatch_method_div", (DL_FUNC) &_torch_cpp_torch_dispatch_method_div, 1},
+    {"_torch_cpp_torch_dispatch_method_div_", (DL_FUNC) &_torch_cpp_torch_dispatch_method_div_, 1},
+    {"_torch_cpp_torch_dispatch_method_divide", (DL_FUNC) &_torch_cpp_torch_dispatch_method_divide, 1},
+    {"_torch_cpp_torch_dispatch_method_divide_", (DL_FUNC) &_torch_cpp_torch_dispatch_method_divide_, 1},
+    {"_torch_cpp_torch_dispatch_method_dsplit", (DL_FUNC) &_torch_cpp_torch_dispatch_method_dsplit, 1},
+    {"_torch_cpp_torch_dispatch_method_flatten", (DL_FUNC) &_torch_cpp_torch_dispatch_method_flatten, 1},
+    {"_torch_cpp_torch_dispatch_method_histogram", (DL_FUNC) &_torch_cpp_torch_dispatch_method_histogram, 1},
+    {"_torch_cpp_torch_dispatch_method_hsplit", (DL_FUNC) &_torch_cpp_torch_dispatch_method_hsplit, 1},
+    {"_torch_cpp_torch_dispatch_method_index_fill", (DL_FUNC) &_torch_cpp_torch_dispatch_method_index_fill, 1},
+    {"_torch_cpp_torch_dispatch_method_index_fill_", (DL_FUNC) &_torch_cpp_torch_dispatch_method_index_fill_, 1},
+    {"_torch_cpp_torch_dispatch_method_max", (DL_FUNC) &_torch_cpp_torch_dispatch_method_max, 1},
+    {"_torch_cpp_torch_dispatch_method_mean", (DL_FUNC) &_torch_cpp_torch_dispatch_method_mean, 1},
+    {"_torch_cpp_torch_dispatch_method_median", (DL_FUNC) &_torch_cpp_torch_dispatch_method_median, 1},
+    {"_torch_cpp_torch_dispatch_method_min", (DL_FUNC) &_torch_cpp_torch_dispatch_method_min, 1},
+    {"_torch_cpp_torch_dispatch_method_moveaxis", (DL_FUNC) &_torch_cpp_torch_dispatch_method_moveaxis, 1},
+    {"_torch_cpp_torch_dispatch_method_movedim", (DL_FUNC) &_torch_cpp_torch_dispatch_method_movedim, 1},
+    {"_torch_cpp_torch_dispatch_method_nanmedian", (DL_FUNC) &_torch_cpp_torch_dispatch_method_nanmedian, 1},
+    {"_torch_cpp_torch_dispatch_method_nanquantile", (DL_FUNC) &_torch_cpp_torch_dispatch_method_nanquantile, 1},
+    {"_torch_cpp_torch_dispatch_method_narrow", (DL_FUNC) &_torch_cpp_torch_dispatch_method_narrow, 1},
+    {"_torch_cpp_torch_dispatch_method_norm", (DL_FUNC) &_torch_cpp_torch_dispatch_method_norm, 1},
+    {"_torch_cpp_torch_dispatch_method_prod", (DL_FUNC) &_torch_cpp_torch_dispatch_method_prod, 1},
+    {"_torch_cpp_torch_dispatch_method_quantile", (DL_FUNC) &_torch_cpp_torch_dispatch_method_quantile, 1},
+    {"_torch_cpp_torch_dispatch_method_random_", (DL_FUNC) &_torch_cpp_torch_dispatch_method_random_, 1},
+    {"_torch_cpp_torch_dispatch_method_repeat_interleave", (DL_FUNC) &_torch_cpp_torch_dispatch_method_repeat_interleave, 1},
+    {"_torch_cpp_torch_dispatch_method_round", (DL_FUNC) &_torch_cpp_torch_dispatch_method_round, 1},
+    {"_torch_cpp_torch_dispatch_method_round_", (DL_FUNC) &_torch_cpp_torch_dispatch_method_round_, 1},
+    {"_torch_cpp_torch_dispatch_method_scatter", (DL_FUNC) &_torch_cpp_torch_dispatch_method_scatter, 1},
+    {"_torch_cpp_torch_dispatch_method_scatter_", (DL_FUNC) &_torch_cpp_torch_dispatch_method_scatter_, 1},
+    {"_torch_cpp_torch_dispatch_method_set_", (DL_FUNC) &_torch_cpp_torch_dispatch_method_set_, 1},
+    {"_torch_cpp_torch_dispatch_method_sort", (DL_FUNC) &_torch_cpp_torch_dispatch_method_sort, 1},
+    {"_torch_cpp_torch_dispatch_method_split", (DL_FUNC) &_torch_cpp_torch_dispatch_method_split, 1},
+    {"_torch_cpp_torch_dispatch_method_squeeze", (DL_FUNC) &_torch_cpp_torch_dispatch_method_squeeze, 1},
+    {"_torch_cpp_torch_dispatch_method_squeeze_", (DL_FUNC) &_torch_cpp_torch_dispatch_method_squeeze_, 1},
+    {"_torch_cpp_torch_dispatch_method_std", (DL_FUNC) &_torch_cpp_torch_dispatch_method_std, 1},
+    {"_torch_cpp_torch_dispatch_method_sum", (DL_FUNC) &_torch_cpp_torch_dispatch_method_sum, 1},
+    {"_torch_cpp_torch_dispatch_method_tensor_split", (DL_FUNC) &_torch_cpp_torch_dispatch_method_tensor_split, 1},
+    {"_torch_cpp_torch_dispatch_method_to", (DL_FUNC) &_torch_cpp_torch_dispatch_method_to, 1},
+    {"_torch_cpp_torch_dispatch_method_to_sparse", (DL_FUNC) &_torch_cpp_torch_dispatch_method_to_sparse, 1},
+    {"_torch_cpp_torch_dispatch_method_transpose", (DL_FUNC) &_torch_cpp_torch_dispatch_method_transpose, 1},
+    {"_torch_cpp_torch_dispatch_method_var", (DL_FUNC) &_torch_cpp_torch_dispatch_method_var, 1},
+    {"_torch_cpp_torch_dispatch_method_view", (DL_FUNC) &_torch_cpp_torch_dispatch_method_view, 1},
+    {"_torch_cpp_torch_dispatch_method_vsplit", (DL_FUNC) &_torch_cpp_torch_dispatch_method_vsplit, 1},
     {"_torch_cpp_torch_generator", (DL_FUNC) &_torch_cpp_torch_generator, 0},
     {"_torch_cpp_generator_current_seed", (DL_FUNC) &_torch_cpp_generator_current_seed, 1},
     {"_torch_cpp_generator_set_current_seed", (DL_FUNC) &_torch_cpp_generator_set_current_seed, 2},
@@ -52570,6 +56434,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"_torch_cpp_torch_tensor_print", (DL_FUNC) &_torch_cpp_torch_tensor_print, 2},
     {"_torch_cpp_tensor_from_buffer", (DL_FUNC) &_torch_cpp_tensor_from_buffer, 3},
     {"_torch_cpp_buffer_from_tensor", (DL_FUNC) &_torch_cpp_buffer_from_tensor, 1},
+    {"_torch_cpp_tensor_to_shm", (DL_FUNC) &_torch_cpp_tensor_to_shm, 1},
+    {"_torch_cpp_tensor_from_shm", (DL_FUNC) &_torch_cpp_tensor_from_shm, 4},
+    {"_torch_cpp_shm_exists", (DL_FUNC) &_torch_cpp_shm_exists, 1},
+    {"_torch_cpp_shm_unlink", (DL_FUNC) &_torch_cpp_shm_unlink, 1},
     {"_torch_cpp_torch_tensor_dtype", (DL_FUNC) &_torch_cpp_torch_tensor_dtype, 1},
     {"_torch_torch_tensor_cpp", (DL_FUNC) &_torch_torch_tensor_cpp, 5},
     {"_torch_cpp_as_array", (DL_FUNC) &_torch_cpp_as_array, 1},
